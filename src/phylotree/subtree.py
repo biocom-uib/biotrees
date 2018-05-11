@@ -1,6 +1,6 @@
 from phylotree import PhyloTree, delete_nodes_with_out_degree_one
 
-import shape.newick
+from shape.newick import from_newick
 import combinatorics
 
 
@@ -73,5 +73,5 @@ def all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves_with_both_shapes_q3(t,
     :param k: `int` instance.
     :return: `list` instance.
     """
-    q3 = shape.newick.from_newick("(*,*),(*,*));")
+    q3 = from_newick("((*,*),(*,*));")
     return all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves_with_shapes(t, m, k, q3, q3)

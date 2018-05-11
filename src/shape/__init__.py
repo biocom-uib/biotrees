@@ -4,7 +4,7 @@ either a leaf or a list of `Shape` objects. Leaves are not distinguishable, but 
 We choose a sorted shape to be the class representant of all shapes isomorphic to it.
 """
 
-__all__ = ['Shape', 'sorted_tree']
+__all__ = ['Shape', 'sorted_tree', 'sorted_by_shape']
 
 
 class Shape(object):

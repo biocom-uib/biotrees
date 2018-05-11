@@ -1,12 +1,11 @@
-from __future__ import division
 from sympy import simplify
-from shape import Shape, sorted_tree, sorted_by_shape
+from shape import Shape, sorted_tree
 from shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
 
 
-import sys
+from sys import setrecursionlimit
 
-sys.setrecursionlimit(2000)
+setrecursionlimit(2000)
 
 
 def alphagamma_from_t(t, prob):

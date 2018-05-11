@@ -1,6 +1,7 @@
 """
 This file contains several functions that generate `Shape` instances.
 """
+
 from sympy import simplify
 from shape import Shape, sorted_tree, sorted_by_shape
 from itertools import groupby
