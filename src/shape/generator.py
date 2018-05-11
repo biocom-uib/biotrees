@@ -2,7 +2,7 @@
 This file contains several functions that generate `Shape` instances.
 """
 from sympy import simplify
-from Shape import Shape, sorted_tree, sorted_by_shape
+from shape import Shape, sorted_tree, sorted_by_shape
 from itertools import groupby
 
 def add_leaf_to_edge(t):

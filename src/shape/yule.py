@@ -1,5 +1,5 @@
-from PhyloTree import shape_to_phylotree
-import PhyloTree.Yule
+from phylotree import shape_to_phylotree
+import phylotree.yule
 
 
 def yule_from_t(sh, prob):
@@ -11,8 +11,8 @@ def yule_from_t(sh, prob):
     :return: `list` instance.
     """
     t = shape_to_phylotree(sh)
-    tps = [(ti.shape(), p) for ti, p in PhyloTree.Yule.yule_from_t(t, prob)]
-    return PhyloTree.Yule.collapse_tree_prob_list(tps)
+    tps = [(ti.shape(), p) for ti, p in phylotree.yule.yule_from_t(t, prob)]
+    return phylotree.yule.collapse_tree_prob_list(tps)
 
 
 def yule(n):
@@ -22,5 +22,5 @@ def yule(n):
     :param n: `int` instance.
     :return: `list` instance.
     """
-    tps = [(ti.shape(), p) for ti, p in PhyloTree.Yule.pseudo_yule(n)]
-    return PhyloTree.Yule.collapse_tree_prob_list(tps)
+    tps = [(ti.shape(), p) for ti, p in phylotree.yule.pseudo_yule(n)]
+    return phylotree.yule.collapse_tree_prob_list(tps)

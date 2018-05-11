@@ -1,9 +1,9 @@
 from __future__ import division
 from sympy import factorial
-from Shape import sorted_tree
-from Shape.Generator import collapse_tree_prob_list
-from PhyloTree.Generator import duplicate_leaf, relabellings
-from PhyloTree import PhyloTree
+from shape import sorted_tree
+from shape.generator import collapse_tree_prob_list
+from phylotree.generator import duplicate_leaf, relabellings
+from phylotree import PhyloTree
 
 
 def yule_from_t(t, prob):

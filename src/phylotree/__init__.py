@@ -1,12 +1,11 @@
 """
 For us, a Phylogenetic Tree (a `PhyloTree` instance) is a special case of Shape in which names of leaves can be
 distinguished.
-We import modules Shape.py and newick.py; the latter will be used for reading Newick code in string format and turning
+We import modules Shape.py and _newick.py; the latter will be used for reading Newick code in string format and turning
 it into trees; it can be found in https://github.com/glottobank/python-newick.
 """
 
-import Shape.Newick
-from Shape import Shape
+from shape import Shape
 
 
 class PhyloTree(Shape):
@@ -17,7 +16,7 @@ class PhyloTree(Shape):
 
     def __init__(self, leaf, children=None):
         """
-        Create a new `PhyloTree` object. 
+        Create a new `PhyloTree` object.
         The boolean is_leaf is True if the object is a leaf; it is False otherwise.
         :param leaf: if is_leaf, its name; otherwise, `None`.
         :param children: `list` instance.

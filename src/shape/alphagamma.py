@@ -1,7 +1,7 @@
 from __future__ import division
 from sympy import simplify
-from Shape import Shape, sorted_tree, sorted_by_shape
-from Shape.Generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
+from shape import Shape, sorted_tree, sorted_by_shape
+from shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
 
 
 import sys

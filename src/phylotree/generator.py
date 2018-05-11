@@ -2,9 +2,9 @@
 This file contains several functions that generate `PhyloTree` instances.
 """
 
-from PhyloTree import PhyloTree
-from Shape import sorted_tree
-from Combinatorics import permutations
+from phylotree import PhyloTree
+from shape import sorted_tree
+from combinatorics import permutations
 
 
 def add_leaf_to_edge(t, leaf_id):

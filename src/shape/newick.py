@@ -2,9 +2,9 @@
 In order to read Newick codes we import the newick module from https://github.com/glottobank/python-newick.
 """
 
-from Shape import Shape
+from shape import Shape
 
-import newick
+import _newick
 
 
 def to_newick(shape):
@@ -22,7 +22,7 @@ def from_newick(nwk):
     :param nwk: a string representing a Newick code.
     :return: `Shape` instance.
     """
-    return newick_node_to_shape(newick.loads(nwk)[0])
+    return newick_node_to_shape(_newick.loads(nwk)[0])
 
 
 def from_newick_list(nwk):
@@ -31,7 +31,7 @@ def from_newick_list(nwk):
     :param nwk: a string representing a list of Newick codes.
     :return: `list` instance.
     """
-    return [newick_node_to_shape(n) for n in newick.loads(nwk)]
+    return [newick_node_to_shape(n) for n in _newick.loads(nwk)]
 
 
 def newick_node_to_shape(node):
@@ -52,8 +52,8 @@ def shape_to_newick_node(shape):
     :return: `Node` instance.
     """
     if shape.is_leaf:
-        return newick.Node.create("*")
-    return newick.Node.create(descendants = [shape_to_newick_node(child) for child in shape.children])
+        return _newick.Node.create("*")
+    return _newick.Node.create(descendants = [shape_to_newick_node(child) for child in shape.children])
 
 
 def shapes_from_file(fname, encoding='utf8', strip_comments=False, **kw):
@@ -65,5 +65,5 @@ def shapes_from_file(fname, encoding='utf8', strip_comments=False, **kw):
     :param kw: Keyword arguments are passed through to `Node.read`.
     :return: `list` instance.
     """
-    l = newick.read(fname, encoding, strip_comments, **kw)
+    l = _newick.read(fname, encoding, strip_comments, **kw)
     return [newick_node_to_shape(n) for n in l]

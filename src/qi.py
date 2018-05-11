@@ -1,14 +1,14 @@
-import Shape
-import Shape.Newick
-import Shape.Generator
-import PhyloTree.Subtree
-import Combinatorics
+import shape
+import shape.newick
+import shape.generator
+import phylotree.subtree
+import combinatorics
 
-q0 = Shape.Newick.from_newick("(*,(*,(*,*)));")
-q1 = Shape.Newick.from_newick("(*,*,(*,*));")
-q2 = Shape.Newick.from_newick("(*,(*,*,*));")
-q3 = Shape.Newick.from_newick("((*,*),(*,*));")
-q4 = Shape.Newick.from_newick("(*,*,*,*);")
+q0 = shape.newick.from_newick("(*,(*,(*,*)));")
+q1 = shape.newick.from_newick("(*,*,(*,*));")
+q2 = shape.newick.from_newick("(*,(*,*,*));")
+q3 = shape.newick.from_newick("((*,*),(*,*));")
+q4 = shape.newick.from_newick("(*,*,*,*);")
 Q = [q0, q1, q2, q3, q4]
 
 
@@ -72,7 +72,7 @@ def qib(t):
 def triples(t):
     if t.count_leaves() < 3:
         return 0
-    elif t.iso(Shape.Newick.from_newick("(*,*,*);")):
+    elif t.iso(shape.newick.from_newick("(*,*,*);")):
         return 1
     else:
         ts = t.children
@@ -85,6 +85,6 @@ def triples(t):
 
 
 def qi_def(t):
-    qs = Combinatorics.subsets_with_k_elements(range(t.count_leaves()), 4)
-    phylot = PhyloTree.shape_to_phylotree(t)
-    return sum(qi(PhyloTree.Subtree.subtree(phylot, q)) for q in qs)
+    qs = combinatorics.subsets_with_k_elements(range(t.count_leaves()), 4)
+    phylot = phylotree.shape_to_phylotree(t)
+    return sum(qi(phylotree.subtree.subtree(phylot, q)) for q in qs)
