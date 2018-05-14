@@ -112,7 +112,7 @@ def finite_bijections(A, B):
         return [[(A[0], B[0])]]
     else:
         return [[(A[0], b)] + bij for b in B
-                for bij in finite_bijections(A[1:], set_minus(B, b))]
+                for bij in finite_bijections(A[1:], set_minus(B, [b]))]
 
 
 def permutations(S):

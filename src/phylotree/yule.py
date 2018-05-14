@@ -3,6 +3,7 @@ from shape import sorted_tree
 from shape.generator import collapse_tree_prob_list
 from phylotree.generator import duplicate_leaf, relabellings
 from phylotree import PhyloTree
+from shape.iso import iso, equal
 
 
 def yule_from_t(t, prob):
@@ -13,7 +14,7 @@ def yule_from_t(t, prob):
 
     tps = [(duplicate_leaf(t, l, str(n+1)), lambda: prob()/n) for l in lvs]
 
-    return collapse_tree_prob_list(tps)
+    return collapse_tree_prob_list(tps, equal)
 
 
 def pseudo_yule(n):
@@ -27,7 +28,7 @@ def pseudo_yule(n):
         tps = [(sorted_tree(t2), lambda prob2=prob2: prob2())
                for t1, prob1 in pseudo_yule(n-1)
                for t2, prob2 in yule_from_t(t1, prob1)]
-        return collapse_tree_prob_list(tps)
+        return collapse_tree_prob_list(tps, iso)
 
 
 def yule(n):
@@ -35,7 +36,7 @@ def yule(n):
     fact = factorial(n)
     return collapse_tree_prob_list([(sorted_tree(t), lambda prob=prob, t=t: prob() * 1 / fact)
                                     for t1, prob in tps
-                                    for t in relabellings(t1)])
+                                    for t in relabellings(t1)], equal)
 
 
 

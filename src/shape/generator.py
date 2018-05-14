@@ -114,18 +114,19 @@ def all_trees_with_n_leaves(n):
         return collapse_list(ts)
 
 
-def collapse_tree_prob_list(tps):
+def collapse_tree_prob_list(tps, boolfunc):
     """
     Takes a list of tuples trees and probabilities and sums the probabilities of all equal trees. Then it returns a list
     in which each tree appears only once.
     :param tps: `list` instance.
+    :param boolfunc: `function` instance.
     :return: `list` instance.
     """
     tps = sorted_by_shape(tps)
     i = 0
     while i < len(tps):
         ps = [tps[i][1]]
-        while i + 1 < len(tps) and tps[i][0] == tps[i + 1][0]:
+        while i + 1 < len(tps) and boolfunc(tps[i][0], tps[i + 1][0]):
             ps.append(tps[i + 1][1])
             tps.pop(i + 1)
         prob = lambda *args, ps=ps: simplify(sum(p(*args) for p in ps))

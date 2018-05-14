@@ -1,6 +1,7 @@
 from sympy import simplify
 from shape import Shape, sorted_tree
 from shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
+from shape.iso import iso
 
 
 from sys import setrecursionlimit
@@ -41,7 +42,7 @@ def alphagamma_from_t(t, prob):
 
         tps.append((sorted_tree(add_leaf_to_node(t)), prob2))
 
-        return collapse_tree_prob_list(tps)
+        return collapse_tree_prob_list(tps, iso)
 
 
 def alphagamma(n):
@@ -64,4 +65,4 @@ def alphagamma(n):
         for t, prob in prev:
             tps.extend(alphagamma_from_t(t, prob))
 
-        return collapse_tree_prob_list(tps)
+        return collapse_tree_prob_list(tps, iso)

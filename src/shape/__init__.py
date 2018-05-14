@@ -117,17 +117,6 @@ class Shape(object):
         """
         return self.compare(t2) > 0
 
-    def iso(self, t2):
-        """
-        Since our `Shape` objects are sorted, to know whether two trees are isomorphic or not it suffices to know if
-        they are equal or not.
-        :param t2: the `Shape` object against which we compare self.
-        :return: `bool` instance.
-        """
-        self.sort()
-        t2.sort()
-        return self == t2
-
     def is_symmetric(self):
         """
         Returns True if the root of self is a symmetric node, and False otherwise. If self is a leaf, it returns True:
