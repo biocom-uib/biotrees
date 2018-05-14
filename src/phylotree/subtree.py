@@ -1,4 +1,5 @@
-from phylotree import PhyloTree, delete_nodes_with_out_degree_one
+from phylotree import PhyloTree
+from phylotree.generator import delete_nodes_with_out_degree_one
 
 from shape.newick import from_newick
 import combinatorics

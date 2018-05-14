@@ -122,20 +122,6 @@ class PhyloTree(Shape):
         return True
 
 
-def delete_nodes_with_out_degree_one(t):
-    """
-    Deletes all nodes in the input `PhyloTree` instance with only one leave, for they are redundant
-    :return: `PhyloTree` instance
-    """
-    if t.is_leaf:
-        return t
-    else:
-        if len(t.children) == 1:
-            return delete_nodes_with_out_degree_one(t.children[0])
-        else:
-            return PhyloTree(None, [delete_nodes_with_out_degree_one(t) for t in t.children])
-
-
 def shape_to_phylotree(shape):
     """
     Returns a `PhyloTree` instance with the same shape as the one given as a parameter.
