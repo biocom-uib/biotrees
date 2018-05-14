@@ -1,12 +1,12 @@
-from sympy import simplify
-from shape import Shape, sorted_tree
-from shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
-from shape.iso import iso
-
-
 from sys import setrecursionlimit
-
 setrecursionlimit(2000)
+
+from sympy import simplify
+
+from biotrees.shape import Shape, sorted_tree
+from biotrees.shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
+from biotrees.shape.iso import iso
+
 
 
 def alphagamma_from_t(t, prob):

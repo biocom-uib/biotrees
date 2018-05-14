@@ -1,9 +1,10 @@
 from math import factorial
-from shape import sorted_tree
-from shape.generator import collapse_tree_prob_list
-from phylotree.generator import duplicate_leaf, relabellings
-from phylotree import PhyloTree
-from shape.iso import iso, equal
+
+from biotrees.shape import sorted_tree
+from biotrees.shape.generator import collapse_tree_prob_list
+from biotrees.phylotree.generator import duplicate_leaf, relabellings
+from biotrees.phylotree import PhyloTree
+from biotrees.shape.iso import iso, equal
 
 
 def yule_from_t(t, prob):

@@ -5,7 +5,7 @@ We import modules Shape.py and _newick.py; the latter will be used for reading N
 it into trees; it can be found in https://github.com/glottobank/python-newick.
 """
 
-from shape import Shape
+from biotrees.shape import Shape
 
 
 class PhyloTree(Shape):

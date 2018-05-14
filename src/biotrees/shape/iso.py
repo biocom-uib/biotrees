@@ -17,6 +17,4 @@ def iso(t1, t2):
     :param t1, t2: the `Shape` objects we want to compare.
     :return: `bool` instance.
     """
-    t1.sort()
-    t2.sort()
-    return t1 == t2
+    return equal(t1, t2)

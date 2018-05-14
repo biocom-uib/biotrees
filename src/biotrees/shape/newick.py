@@ -2,9 +2,9 @@
 In order to read Newick codes we import the newick module from https://github.com/glottobank/python-newick.
 """
 
-from shape import Shape
+from biotrees.shape import Shape
 
-import _newick
+import biotrees._newick as _newick
 
 
 def to_newick(shape):

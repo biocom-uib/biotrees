@@ -2,9 +2,9 @@
 This file contains several functions that generate `PhyloTree` instances.
 """
 
-from phylotree import PhyloTree
-from shape import sorted_tree
-from combinatorics import permutations
+from biotrees.phylotree import PhyloTree
+from biotrees.shape import sorted_tree
+from biotrees.combinatorics import permutations
 
 
 def add_leaf_to_edge(t, leaf_id):
@@ -52,6 +52,10 @@ def duplicate_leaf(t, l, newl):
     return recurse(t, l, newl, n)
 
 
+def cherry(lf1, lf2):
+    return PhyloTree(None, [PhyloTree(lf1), PhyloTree(lf2)])
+
+
 def relabel(t, rlbl):
     """
     Renames the leaves in the input tree with a given function.
@@ -78,7 +82,6 @@ def relabellings(t):
     """
     perms = permutations(t.leaves_names_set())
     return [relabel(t, perm) for perm in perms]
-
 
 
 def delete_nodes_with_out_degree_one(t):

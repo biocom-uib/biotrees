@@ -1,7 +1,8 @@
-from shape.newick import from_newick
-from phylotree import shape_to_phylotree
-from phylotree.subtree import subtree
 from itertools import combinations
+
+from biotrees.shape.newick import from_newick
+from biotrees.phylotree import shape_to_phylotree
+from biotrees.phylotree.subtree import subtree
 
 q0 = from_newick("(*,(*,(*,*)));")
 q1 = from_newick("(*,*,(*,*));")

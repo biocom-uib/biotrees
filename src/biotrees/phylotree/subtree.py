@@ -1,8 +1,8 @@
-from phylotree import PhyloTree
-from phylotree.generator import delete_nodes_with_out_degree_one
+from biotrees.phylotree import PhyloTree
+from biotrees.phylotree.generator import delete_nodes_with_out_degree_one
 
-from shape.newick import from_newick
-import combinatorics
+from biotrees.shape.newick import from_newick
+import biotrees.combinatorics as combinatorics
 
 
 def subtree(t, lvs):

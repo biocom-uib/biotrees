@@ -4,7 +4,7 @@ Functionality to read and write the Newick serialization format for trees.
 
 .. seealso:: https://en.wikipedia.org/wiki/Newick_format
 """
-from __future__ import unicode_literals
+
 import io
 import re
 

@@ -2,9 +2,11 @@
 This file contains several functions that generate `Shape` instances.
 """
 
-from sympy import simplify
-from shape import Shape, sorted_tree, sorted_by_shape
 from itertools import groupby
+from sympy import simplify
+
+from biotrees.shape import Shape, sorted_tree, sorted_by_shape
+from biotrees.shape.iso import iso
 
 def add_leaf_to_edge(t):
     """
@@ -104,7 +106,7 @@ def all_trees_with_n_leaves(n):
     elif n == 1:
         return [Shape()]
     elif n == 2:
-        return [Shape([Shape(), Shape()])]
+        return [cherry()]
     else:
         ts = []
 
@@ -112,6 +114,10 @@ def all_trees_with_n_leaves(n):
             ts = ts + all_trees_from_t(t)
 
         return collapse_list(ts)
+
+
+def cherry():
+    return Shape([Shape(), Shape()])
 
 
 def collapse_tree_prob_list(tps, boolfunc):
@@ -134,6 +140,16 @@ def collapse_tree_prob_list(tps, boolfunc):
         i += 1
     return tps
 
+
+def filter_by_shape(lst, boolfunc):
+    lst = sorted_by_shape(lst)
+    i = 0
+    while i < len(lst):
+        while i + 1 < len(lst) and boolfunc(lst[i][0], lst[i + 1][0]):
+            lst.pop(i + 1)
+
+        i += 1
+    return lst
 
 def collapse_list(lst):
     return [k for k, _ in groupby(lst)]

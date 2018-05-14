@@ -1,7 +1,7 @@
-from shape.iso import equal
-from shape.generator import collapse_tree_prob_list
-from phylotree import shape_to_phylotree
-import phylotree.yule as phyloyule
+from biotrees.shape.iso import equal
+from biotrees.shape.generator import collapse_tree_prob_list
+from biotrees.phylotree import shape_to_phylotree
+import biotrees.phylotree.yule as phyloyule
 
 
 def yule_from_t(sh, prob):
