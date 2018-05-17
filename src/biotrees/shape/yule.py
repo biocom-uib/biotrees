@@ -1,5 +1,7 @@
-from PhyloTree import shape_to_phylotree
-import PhyloTree.Yule
+from biotrees.shape.iso import equal
+from biotrees.shape.generator import collapse_tree_prob_list
+from biotrees.phylotree import shape_to_phylotree
+import biotrees.phylotree.yule as phyloyule
 
 
 def yule_from_t(sh, prob):
@@ -11,8 +13,8 @@ def yule_from_t(sh, prob):
     :return: `list` instance.
     """
     t = shape_to_phylotree(sh)
-    tps = [(ti.shape(), p) for ti, p in PhyloTree.Yule.yule_from_t(t, prob)]
-    return PhyloTree.Yule.collapse_tree_prob_list(tps)
+    tps = [(ti.shape(), p) for ti, p in phyloyule.yule_from_t(t, prob)]
+    return collapse_tree_prob_list(tps, equal)
 
 
 def yule(n):
@@ -22,5 +24,5 @@ def yule(n):
     :param n: `int` instance.
     :return: `list` instance.
     """
-    tps = [(ti.shape(), p) for ti, p in PhyloTree.Yule.pseudo_yule(n)]
-    return PhyloTree.Yule.collapse_tree_prob_list(tps)
+    tps = [(ti.shape(), p) for ti, p in phyloyule.pseudo_yule(n)]
+    return collapse_tree_prob_list(tps, equal)

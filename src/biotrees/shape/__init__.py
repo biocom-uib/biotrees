@@ -4,7 +4,7 @@ either a leaf or a list of `Shape` objects. Leaves are not distinguishable, but 
 We choose a sorted shape to be the class representant of all shapes isomorphic to it.
 """
 
-__all__ = ['Shape', 'sorted_tree']
+__all__ = ['Shape', 'sorted_tree', 'sorted_by_shape']
 
 
 class Shape(object):
@@ -13,7 +13,7 @@ class Shape(object):
     """
     def __init__(self, children=None):
         """
-        Create a new `Shape` object. 
+        Create a new `Shape` object.
         The boolean is_leaf is True if the object is a leaf; it is False otherwise.
         :param children: `list` instance.
         :return: `Shape` instance.
@@ -46,7 +46,7 @@ class Shape(object):
 
     def compare(self, t2):
         """
-        Compare self with another `Shape` object. We use lexicographical order in order to compare two `Shape` instances. 
+        Compare self with another `Shape` object. We use lexicographical order in order to compare two `Shape` instances.
         Leaves in this case are indistinguishable. It returns anint c, which is 0 if self and T2 are equal, < 0 if
         self < T2, and > 0 if self > T2.
         :param t2: `Shape` instance.
@@ -116,17 +116,6 @@ class Shape(object):
         :return: `bool` instance.
         """
         return self.compare(t2) > 0
-
-    def iso(self, t2):
-        """
-        Since our `Shape` objects are sorted, to know whether two trees are isomorphic or not it suffices to know if
-        they are equal or not.
-        :param t2: the `Shape` object against which we compare self.
-        :return: `bool` instance.
-        """
-        self.sort()
-        t2.sort()
-        return self == t2
 
     def is_symmetric(self):
         """
@@ -206,7 +195,7 @@ def delete_nodes_with_out_degree_one(t):
 
 def sorted_by_shape(l):
     """
-    Takes a list of lists or tuples whose first component is a Shape instance. It sorts the 
+    Takes a list of lists or tuples whose first component is a Shape instance. It sorts the
     list according only to its Shape-induced order in the first component of each element.
     :param: `list` instance.
     :return: `list` instance.

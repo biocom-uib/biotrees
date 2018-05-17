@@ -1,5 +1,5 @@
-from PhyloTree import PhyloTree
-import newick
+from biotrees.phylotree import PhyloTree
+import biotrees._newick as _newick
 
 
 def to_newick(phylo):
@@ -17,7 +17,7 @@ def from_newick(nwk):
     :param nwk: a string representing a Newick code.
     :return: `PhyloTree` instance.
     """
-    return newick_node_to_phylo(newick.loads(nwk)[0])
+    return newick_node_to_phylo(_newick.loads(nwk)[0])
 
 
 def from_newick_list(nwk):
@@ -26,7 +26,7 @@ def from_newick_list(nwk):
     :param nwk: a string representing a list of Newick codes.
     :return: `list` instance.
     """
-    return[newick_node_to_phylo(n) for n in newick.loads(nwk)]
+    return[newick_node_to_phylo(n) for n in _newick.loads(nwk)]
 
 
 def newick_node_to_phylo(node):
@@ -47,8 +47,8 @@ def phylo_to_newick_node(phylo):
     :return: `Node` instance.
     """
     if phylo.is_leaf:
-        return newick.Node.create(str(phylo.leaf))
-    return newick.Node.create(descendants = [phylo_to_newick_node(child) for child in phylo.children])
+        return _newick.Node.create(str(phylo.leaf))
+    return _newick.Node.create(descendants = [phylo_to_newick_node(child) for child in phylo.children])
 
 
 def trees_from_file(fname, encoding='utf8', strip_comments=False, **kw):
@@ -60,5 +60,5 @@ def trees_from_file(fname, encoding='utf8', strip_comments=False, **kw):
     :param kw: Keyword arguments are passed through to `Node.read`.
     :return: `list` instance.
     """
-    l = newick.read(fname, encoding, strip_comments, **kw)
+    l = _newick.read(fname, encoding, strip_comments, **kw)
     return [newick_node_to_phylo(n) for n in l]

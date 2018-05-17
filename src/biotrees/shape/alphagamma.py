@@ -1,12 +1,12 @@
-from __future__ import division
+from sys import setrecursionlimit
+setrecursionlimit(2000)
+
 from sympy import simplify
-from Shape import Shape, sorted_tree, sorted_by_shape
-from Shape.Generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
 
+from biotrees.shape import Shape, sorted_tree
+from biotrees.shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
+from biotrees.shape.iso import iso
 
-import sys
-
-sys.setrecursionlimit(2000)
 
 
 def alphagamma_from_t(t, prob):
@@ -42,7 +42,7 @@ def alphagamma_from_t(t, prob):
 
         tps.append((sorted_tree(add_leaf_to_node(t)), prob2))
 
-        return collapse_tree_prob_list(tps)
+        return collapse_tree_prob_list(tps, iso)
 
 
 def alphagamma(n):
@@ -65,4 +65,4 @@ def alphagamma(n):
         for t, prob in prev:
             tps.extend(alphagamma_from_t(t, prob))
 
-        return collapse_tree_prob_list(tps)
+        return collapse_tree_prob_list(tps, iso)
