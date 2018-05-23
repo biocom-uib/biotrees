@@ -4,7 +4,7 @@ In order to read Newick codes we import the newick module from https://github.co
 
 from biotrees.shape import Shape
 
-import biotrees._newick as _newick
+from biotrees import _newick
 
 
 def to_newick(shape):
@@ -51,7 +51,7 @@ def shape_to_newick_node(shape):
     :param shape: `Shape` instance.
     :return: `Node` instance.
     """
-    if shape.is_leaf:
+    if shape.is_leaf():
         return _newick.Node.create("*")
     return _newick.Node.create(descendants = [shape_to_newick_node(child) for child in shape.children])
 

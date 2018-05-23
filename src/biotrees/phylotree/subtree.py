@@ -1,8 +1,10 @@
 from biotrees.phylotree import PhyloTree
 from biotrees.phylotree.generator import delete_nodes_with_out_degree_one
 
-from biotrees.shape.newick import from_newick
-import biotrees.combinatorics as combinatorics
+from biotrees.shape import newick as shape_newick
+from biotrees.shape.iso import isomorphic as isomorphic_shape
+
+from biotrees import combinatorics
 
 
 def subtree(t, lvs):
@@ -61,7 +63,11 @@ def all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves_with_shapes(t, m, k, s
     p  = all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves(t, m, k)
     P = []
     for pair in p:
-        if (pair[0].shape().iso(s1) and pair[1].shape().iso(s2)) or (pair[0].shape().iso(s2) and pair[1].shape().iso(s1)):
+        pair0_shape = pair[0].shape()
+        pair1_shape = pair[1].shape()
+
+        if (isomorphic_shape(pair0_shape, s1) and isomorphic_shape(pair1_shape, s2)) or (
+                isomorphic_shape(pair0_shape, s2) and isomorphic_shape(pair1_shape, s1)):
             P.append(pair)
     return P
 
@@ -74,5 +80,5 @@ def all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves_with_both_shapes_q3(t,
     :param k: `int` instance.
     :return: `list` instance.
     """
-    q3 = from_newick("((*,*),(*,*));")
+    q3 = shape_newick.from_newick("((*,*),(*,*));")
     return all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves_with_shapes(t, m, k, q3, q3)

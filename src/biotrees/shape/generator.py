@@ -1,12 +1,11 @@
 """
 This file contains several functions that generate `Shape` instances.
 """
+from functools import lru_cache
 
-from itertools import groupby
-from sympy import simplify
+from biotrees.shape import Shape
+from biotrees.util import and_then, iter_merge, skip_nth, unique
 
-from biotrees.shape import Shape, sorted_tree, sorted_by_shape
-from biotrees.shape.iso import iso
 
 def add_leaf_to_edge(t):
     """
@@ -14,8 +13,7 @@ def add_leaf_to_edge(t):
     :param t: `Shape` instance.
     :return: `Shape` instance.
     """
-    return Shape([Shape(), t])
-
+    return Shape([Shape.LEAF, t])
 
 def add_leaf_to_node(t):
     """
@@ -23,57 +21,73 @@ def add_leaf_to_node(t):
     :param t: `Shape` instance.
     :return: `Shape` instance.
     """
-    if t.is_leaf:
+    if t.is_leaf():
         return add_leaf_to_edge(t)
     else:
-        ch = t.children[:]
-        ch[:0] = [Shape()]
-        return Shape(ch)
+        return Shape([Shape.LEAF] + t.children)
+
+def iter_insert_tree(ts, t):
+    yield from iter_merge_forests_sorted(ts, [t])
+
+def iter_merge_forests_sorted(ts1, ts2):
+    yield from iter_merge(ts1, ts2)
+
+def iter_replace_tree_at(ts, i, repl):
+    yield from iter_insert_tree(skip_nth(ts, i), repl)
+
+def delete_nodes_with_out_degree_one(t):
+    """
+    Deletes all nodes in the input `Shape` instance with only one child, for they are redundant
+    :return: `Shape` instance
+    """
+    if t.is_leaf():
+        return t
+    else:
+        if len(t.children) == 1:
+            return delete_nodes_with_out_degree_one(t.children[0])
+        else:
+            return Shape([delete_nodes_with_out_degree_one(ch) for ch in t.children])
+
+def cherry():
+    return Shape([Shape.LEAF, Shape.LEAF])
 
 
+@and_then(unique)
 def all_binary_trees_from_t(t):
     """
     Returns a list with all the binary `Shape` instances that can be obtained from the input tree.
     :param t: `Shape` instance.
     :return: `list` instance.
     """
-    if t.is_leaf:
-        return [add_leaf_to_edge(t)]
-    else:
-        lst = []
+    if not t.is_leaf():
         for i in range(len(t.children)):
             for ti in all_binary_trees_from_t(t.children[i]):
-                ts = t.children[:]
-                ts[i] = ti
-                lst.append(sorted_tree(Shape(ts)))
+                ts2 = list(iter_replace_tree_at(t.children, i, ti))
+                yield Shape(ts2)
 
-        lst.append(add_leaf_to_edge(t))
-
-        return collapse_list(lst)
+    yield add_leaf_to_edge(t)
 
 
+@and_then(unique)
 def all_trees_from_t(t):
     """
     Returns a list with all the `Shape` instances that can be obtained from the input tree.
     :param t: `Shape` instance.
     :return: `list` instance.
     """
-    if t.is_leaf:
-        return [add_leaf_to_edge(t)]
-    else:
-        lst = []
+    if not t.is_leaf():
         for i in range(len(t.children)):
             for ti in all_trees_from_t(t.children[i]):
-                ts = t.children[:]
-                ts[i] = ti
-                lst.append(sorted_tree(Shape(ts)))
+                ts2 = list(iter_replace_tree_at(t.children, i, ti))
+                yield Shape(ts2)
 
-        lst.append(add_leaf_to_edge(t))
-        lst.append(add_leaf_to_node(t))
+        yield add_leaf_to_node(t)
 
-        return collapse_list(lst)
+    yield add_leaf_to_edge(t)
 
 
+@lru_cache(maxsize=None)
+@and_then(unique)
 def all_binary_trees_with_n_leaves(n):
     """
     Returns a list with all the binary `Shape` instances that have n leaves.
@@ -81,20 +95,18 @@ def all_binary_trees_with_n_leaves(n):
     :return: `list` instance.
     """
     if n <= 0:
-        return []
+        pass
     elif n == 1:
-        return [Shape()]
+        yield Shape.LEAF
     elif n == 2:
-        return [Shape([Shape(), Shape()])]
+        yield Shape([Shape.LEAF, Shape.LEAF])
     else:
-        ts = []
-
         for t in all_binary_trees_with_n_leaves(n-1):
-            ts = ts + all_binary_trees_from_t(t)
-
-        return collapse_list(ts)
+            yield from all_binary_trees_from_t(t)
 
 
+@lru_cache(maxsize=None)
+@and_then(unique)
 def all_trees_with_n_leaves(n):
     """
     Returns a list with all the `Shape` instances that have n leaves.
@@ -102,54 +114,11 @@ def all_trees_with_n_leaves(n):
     :return: `list` instance.
     """
     if n <= 0:
-        return []
+        pass
     elif n == 1:
-        return [Shape()]
+        yield Shape.LEAF
     elif n == 2:
-        return [cherry()]
+        yield cherry()
     else:
-        ts = []
-
         for t in all_trees_with_n_leaves(n-1):
-            ts = ts + all_trees_from_t(t)
-
-        return collapse_list(ts)
-
-
-def cherry():
-    return Shape([Shape(), Shape()])
-
-
-def collapse_tree_prob_list(tps, boolfunc):
-    """
-    Takes a list of tuples trees and probabilities and sums the probabilities of all equal trees. Then it returns a list
-    in which each tree appears only once.
-    :param tps: `list` instance.
-    :param boolfunc: `function` instance.
-    :return: `list` instance.
-    """
-    tps = sorted_by_shape(tps)
-    i = 0
-    while i < len(tps):
-        ps = [tps[i][1]]
-        while i + 1 < len(tps) and boolfunc(tps[i][0], tps[i + 1][0]):
-            ps.append(tps[i + 1][1])
-            tps.pop(i + 1)
-        prob = lambda *args, ps=ps: simplify(sum(p(*args) for p in ps))
-        tps[i] = (tps[i][0], prob)
-        i += 1
-    return tps
-
-
-def filter_by_shape(lst, boolfunc):
-    lst = sorted_by_shape(lst)
-    i = 0
-    while i < len(lst):
-        while i + 1 < len(lst) and boolfunc(lst[i][0], lst[i + 1][0]):
-            lst.pop(i + 1)
-
-        i += 1
-    return lst
-
-def collapse_list(lst):
-    return [k for k, _ in groupby(lst)]
+            yield from all_trees_from_t(t)

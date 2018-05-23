@@ -5,7 +5,7 @@ We import modules Shape.py and _newick.py; the latter will be used for reading N
 it into trees; it can be found in https://github.com/glottobank/python-newick.
 """
 
-from biotrees.shape import Shape
+from biotrees.shape import Shape, is_binary, count_leaves, get_depth
 
 
 class PhyloTree(Shape):
@@ -24,14 +24,14 @@ class PhyloTree(Shape):
         """
         super(PhyloTree, self).__init__(children)
         self.leaf = leaf
-        assert not self.is_leaf or (leaf is not None)
+        assert not self.is_leaf() or (leaf is not None)
 
     def clone(self):
         """
         Returns new `PhyloTree` instance which is exactly the same as self.
         :return: `PhyloTree` instance.
         """
-        if self.is_leaf:
+        if self.is_leaf():
             return PhyloTree(self.leaf)
         else:
             return PhyloTree(None, [ch.clone() for ch in self.children])
@@ -44,10 +44,10 @@ class PhyloTree(Shape):
         :param t2: the `Shape` object against which we compare self.
         :return: `int` instance.
         """
-        if self.is_leaf != t2.is_leaf:
-            return (not self.is_leaf) - (not t2.is_leaf)
+        if self.is_leaf() != t2.is_leaf():
+            return (not self.is_leaf()) - (not t2.is_leaf())
 
-        if self.is_leaf:
+        if self.is_leaf():
             if self.leaf < t2.leaf:
                 return -1
             elif self.leaf > t2.leaf:
@@ -64,63 +64,67 @@ class PhyloTree(Shape):
                 return c
         return 0
 
+    def __str__(self):
+        from biotrees.phylotree.newick import to_newick
+        return to_newick(self)
+
     def shape(self):
         """
         Returns the `Shape` associated to self. Namely, it "forgets" the names of the leaves.
         :return: `Shape` instance.
         """
-        if self.is_leaf:
+        if self.is_leaf():
             return Shape(None)
         else:
             return Shape([x.shape() for x in self.children])
 
-    def leaves(self):
-        """
-        Yields the (names of the) leaves of self.
-        :return: `PhyloTree` instance.
-        """
-        if self.is_leaf:
-            yield self
-        else:
-            for x in self.children:
-                for l in x.leaves():
-                    yield l
 
-    def get_leaves(self):
-        """
-        Returns a list with the leaves that appear in self, sorted in lexicographical order.
-        Repetitions may arise if the user enters trees which are not phylogenetic.
-        :return: `list` instance.
-        """
-        return sorted(list(self.leaves()))
+def leaves(t):
+    """
+    Yields the leaves of t.
+    :return: `PhyloTree` instance.
+    """
+    if t.is_leaf():
+        yield t
+    else:
+        for x in t.children:
+            for l in leaves(x):
+                yield l
 
-    def get_leaves_names(self):
-        """
-        Returns a list with the leaves' names that appear in self, sorted in lexicographical order.
-        Repetitions may arise if the user enters trees which are not phylogenetic.
-        :return: `list` instance.
-        """
-        return [l.leaf for l in self.get_leaves()]
+def get_leaves(t):
+    """
+    Returns a list with the leaves that appear in t, sorted in lexicographical order.
+    Repetitions may arise if the user enters trees which are not phylogenetic.
+    :return: `list` instance.
+    """
+    return sorted(leaves(t))
 
-    def leaves_names_set(self):
-        """
-        Returns a list with the leaves' names that appear in self, sorted in lexicographical order.
-        Repetitions shall not be included.
-        :return: `list` instance.
-        """
-        return sorted(list(set(self.get_leaves_names())))
+def get_leaves_names(t):
+    """
+    Returns a list with the leaves' names that appear in t, sorted in lexicographical order.
+    Repetitions may arise if the user enters trees which are not phylogenetic.
+    :return: `list` instance.
+    """
+    return [l.leaf for l in get_leaves(t)]
 
-    def is_phylo(self):
-        """
-        Returns True if self is phylogenetic (namely, if it has no repeated leaves). Returns False otherwise.
-        :return: `bool` instance.
-        """
-        l = self.get_leaves()
-        for i in range(1, len(l)):
-            if l[i] == l[i-1]:
-                return False
-        return True
+def get_leaves_names_set(t):
+    """
+    Returns a list with the leaves' names that appear in t, sorted in lexicographical order.
+    Repetitions shall not be included.
+    :return: `list` instance.
+    """
+    return sorted(set(get_leaves_names(t)))
 
+def is_phylo(t):
+    """
+    Returns True if t is phylogenetic (namely, if it has no repeated leaves). Returns False otherwise.
+    :return: `bool` instance.
+    """
+    l = get_leaves(t)
+    for i in range(1, len(l)):
+        if l[i] == l[i-1]:
+            return False
+    return True
 
 def shape_to_phylotree(shape):
     """
@@ -131,7 +135,7 @@ def shape_to_phylotree(shape):
     i = [-1]
 
     def recurse(sh):
-        if sh.is_leaf:
+        if sh.is_leaf():
             i[0] += 1
             return PhyloTree(str(i[0]))
         else:

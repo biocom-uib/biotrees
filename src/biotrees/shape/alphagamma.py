@@ -1,14 +1,15 @@
-from sys import setrecursionlimit
-setrecursionlimit(2000)
-
+from functools import lru_cache
 from sympy import simplify
 
-from biotrees.shape import Shape, sorted_tree
-from biotrees.shape.generator import add_leaf_to_edge, add_leaf_to_node, collapse_tree_prob_list
-from biotrees.shape.iso import iso
+from biotrees.shape import Shape, count_leaves, add_leaf_to_edge, add_leaf_to_node, iter_replace_tree_at
+from biotrees.util import and_then, parametric_total_probabilities
 
 
+import sys
+sys.setrecursionlimit(2000)
 
+
+@and_then(parametric_total_probabilities)
 def alphagamma_from_t(t, prob):
     """
     Returns a list of tuples containing each shape obtained from `Shape` sh (assuming sh has probability prob) with
@@ -17,34 +18,33 @@ def alphagamma_from_t(t, prob):
     :param prob: `function` instance.
     :return: `list` instance.
     """
-    n = t.count_leaves()
-    if t.is_leaf:
+    n = count_leaves(t)
+    if t.is_leaf():
         return [(add_leaf_to_edge(t), lambda a, c: simplify(prob(a, c) * (1 - a) / (n - a)))]
     else:
-        tps = []
         for i in range(len(t.children)):
-            k = t.children[i].count_leaves()
+            k = count_leaves(t.children[i])
             if n > 1:
-                p_times_m = lambda a, c, k = k: simplify(prob(a, c) * (k - a) / (n - a))
+                p_times_m = lambda a, c, k=k: simplify(prob(a, c) * (k - a) / (n - a))
             else:
                 p_times_m = prob
             for ti, q in alphagamma_from_t(t.children[i], p_times_m):
-                ts = t.children[:]
-                ts[i] = ti
-                tps.append((sorted_tree(Shape(ts)), q))
+                ts2 = list(iter_replace_tree_at(t.children, i, ti))
+                yield (Shape(ts2), q)
 
-        tps.append((sorted_tree(add_leaf_to_edge(t)), lambda a, c: simplify(prob(a, c) * c / (n - a))))
+        yield (add_leaf_to_edge(t), lambda a, c: simplify(prob(a, c) * c / (n - a)))
+
         k = len(t.children)
         if k > 1:
-            prob2 = lambda a, c, k = k: simplify(prob(a, c) * ((k - 1) * a - c) / (n - a))
+            prob2 = lambda a, c, k=k: simplify(prob(a, c) * ((k - 1) * a - c) / (n - a))
         else:
             prob2 = prob
 
-        tps.append((sorted_tree(add_leaf_to_node(t)), prob2))
-
-        return collapse_tree_prob_list(tps, iso)
+        yield (add_leaf_to_node(t), prob2)
 
 
+@lru_cache(maxsize=None)
+@and_then(parametric_total_probabilities)
 def alphagamma(n):
     """
     Returns a list of tuples containing all the shapes of n leaves that can be obtained under the Alpha-Gamma model and
@@ -53,16 +53,11 @@ def alphagamma(n):
     :return: `list` instance.
     """
     if n <= 0:
-        return []
+        pass
     elif n == 1:
-        return [(Shape(), lambda a, c: 1)]
+        yield (Shape.LEAF, lambda a, c: 1)
     elif n == 2:
-        return [(Shape([Shape(), Shape()]), lambda a, c: 1)]
+        yield (Shape([Shape.LEAF, Shape.LEAF]), lambda a, c: 1)
     else:
-        tps = []
-        prev = alphagamma(n - 1)
-
-        for t, prob in prev:
-            tps.extend(alphagamma_from_t(t, prob))
-
-        return collapse_tree_prob_list(tps, iso)
+        for t, prob in alphagamma(n-1):
+            yield from alphagamma_from_t(t, prob)

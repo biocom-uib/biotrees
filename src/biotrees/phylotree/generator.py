@@ -2,9 +2,10 @@
 This file contains several functions that generate `PhyloTree` instances.
 """
 
+from itertools import permutations
+
+from biotrees.util import and_then, iter_merge, unique
 from biotrees.phylotree import PhyloTree
-from biotrees.shape import sorted_tree
-from biotrees.combinatorics import permutations
 
 
 def add_leaf_to_edge(t, leaf_id):
@@ -13,8 +14,12 @@ def add_leaf_to_edge(t, leaf_id):
     :param t, leaf_id: `PhyloTree` instance, unicode instance.
     :return: `PhyloTree` instance.
     """
-    return PhyloTree(None, [PhyloTree(leaf_id), t])
+    new_leaf = PhyloTree(leaf_id)
 
+    if t < new_leaf:
+        return PhyloTree(None, [t, PhyloTree(leaf_id)])
+    else:
+        return PhyloTree(None, [PhyloTree(leaf_id), t])
 
 def add_leaf_to_node(t, leaf_id):
     """
@@ -22,13 +27,29 @@ def add_leaf_to_node(t, leaf_id):
     :param t, leaf_id: `PhyloTree` instance, unicode instance.
     :return: `PhyloTree` instance.
     """
-    if t.is_leaf:
+    if t.is_leaf():
         return add_leaf_to_edge(t, leaf_id)
     else:
-        ch = t.children[:]
-        ch[:0] = [PhyloTree(leaf_id)]
-        return PhyloTree(None, ch)
+        return PhyloTree(None, list(iter_insert_tree(t.children, PhyloTree(leaf_id))))
 
+def iter_insert_tree(ts, t):
+    yield from iter_merge_forests_sorted(ts, [t])
+
+def iter_merge_forests_sorted(ts, ts2):
+    yield from iter_merge(ts, ts2)
+
+def delete_nodes_with_out_degree_one(t):
+    """
+    Deletes all nodes in the input `PhyloTree` instance with only one leave, for they are redundant
+    :return: `PhyloTree` instance
+    """
+    if t.is_leaf():
+        return t
+    else:
+        if len(t.children) == 1:
+            return delete_nodes_with_out_degree_one(t.children[0])
+        else:
+            return PhyloTree(None, [delete_nodes_with_out_degree_one(ch) for ch in t.children])
 
 def duplicate_leaf(t, l, newl):
     """
@@ -38,22 +59,15 @@ def duplicate_leaf(t, l, newl):
     :param newl: `PhyloTree` instance.
     :return: `PhyloTree` instance.
     """
-    n = t.count_leaves()
+    l_leaf = l.leaf
 
-    def recurse(t, l, newl, n):
-        if t.leaf == l.leaf:
-            return add_leaf_to_edge(t, newl)
-        elif t.is_leaf and t.leaf != l.leaf:
-            return t
+    def recurse(t, l, newl):
+        if t.is_leaf():
+            return add_leaf_to_edge(t, newl) if t.leaf == l_leaf else t
         else:
-            genet = PhyloTree(None, [recurse(ch, l, newl, n) for ch in t.children])
-            return sorted_tree(genet)
+            return PhyloTree(None, sorted([recurse(ch, l, newl) for ch in t.children]))
 
-    return recurse(t, l, newl, n)
-
-
-def cherry(lf1, lf2):
-    return PhyloTree(None, [PhyloTree(lf1), PhyloTree(lf2)])
+    return recurse(t, l, newl)
 
 
 def relabel(t, rlbl):
@@ -63,13 +77,13 @@ def relabel(t, rlbl):
     :param rlbl: `list` instance.
     :return: `PhyloTree` instance.
     """
-    if t.is_leaf:
-        for lbl1, lbl2 in rlbl:
-            if t.leaf == lbl1:
-                return PhyloTree(lbl2)
-        return PhyloTree(t.leaf)
+    if t.is_leaf():
+        l2 = rlbl.get(t.leaf, None)
+        if l2 is not None:
+            return PhyloTree(l2)
+        return t
     else:
-        return PhyloTree(None, [relabel(ch, rlbl) for ch in t.children])
+        return PhyloTree(None, sorted([relabel(ch, rlbl) for ch in t.children]))
 
 
 def relabellings(t):
@@ -80,19 +94,7 @@ def relabellings(t):
     :param t: `PhyloTree` instance.
     :return: `list` instance.
     """
-    perms = permutations(t.leaves_names_set())
-    return [relabel(t, perm) for perm in perms]
+    names = list(get_leaves_names_set(t))
 
-
-def delete_nodes_with_out_degree_one(t):
-    """
-    Deletes all nodes in the input `PhyloTree` instance with only one leave, for they are redundant
-    :return: `PhyloTree` instance
-    """
-    if t.is_leaf:
-        return t
-    else:
-        if len(t.children) == 1:
-            return delete_nodes_with_out_degree_one(t.children[0])
-        else:
-            return PhyloTree(None, [delete_nodes_with_out_degree_one(t) for t in t.children])
+    for perm in permutations(names):
+        yield relabel(t, dict(zip(names, perm)))
