@@ -3,6 +3,7 @@ from math import factorial
 
 from biotrees.phylotree import PhyloTree, count_leaves
 from biotrees.phylotree.generator import duplicate_leaf, relabellings
+from biotrees.util import parametric_total_probabilities, and_then
 
 
 @and_then(parametric_total_probabilities)

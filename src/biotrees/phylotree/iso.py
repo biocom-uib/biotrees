@@ -1,3 +1,6 @@
+import biotrees.shape.iso as shape
+
+
 def equal(t1, t2):
     """
     Since our `PhyloTree` objects are sorted, to know whether two trees are equal or not it suffices to know if
@@ -17,4 +20,4 @@ def isomorphic(t1, t2):
     :param t1, t2: the `PhyloTree` objects we want to compare.
     :return: `bool` instance.
     """
-    return equal(t1, t2)
+    return shape.equal(t1.shape(), t2.shape())
