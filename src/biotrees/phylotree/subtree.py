@@ -1,3 +1,5 @@
+from itertools import combinations
+
 from biotrees.phylotree import PhyloTree
 from biotrees.phylotree.generator import delete_nodes_with_out_degree_one
 
@@ -44,7 +46,7 @@ def all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves(t, m, k):
         ps = combinatorics.pairs_of_disjoint_subsets_with_k_elements(t.label_set(), m)
         return [(subtree(t, s1), subtree(t, s2)) for s1, s2 in ps]
     else:
-        for s in combinatorics.subsets_with_k_elements(range(n), k):
+        for s in combinations(range(n), k):
             ps = combinatorics.pairs_of_subsets_with_k_elements_that_share_exactly_subset_s(range(n), m, s)
             forest = [(subtree(t, s1), subtree(t, s2)) for s1, s2 in ps]
 

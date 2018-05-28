@@ -12,6 +12,22 @@ def skip_nth(iterable, n):
 def unique(lst):
     return [k for k, _ in groupby(sorted(lst))]
 
+def unique_unsortable(lst):
+    #lst = sorted_by_shape(lst)
+    lst = lst[:]
+    i = 0
+    while i < len(lst):
+        j = i + 1
+        while j < len(lst):
+            if lst[i] == lst[j]:
+                lst.pop(j)
+            else:
+                j += 1
+
+        i += 1
+    return lst
+
+
 def iter_merge(xs, ys):
     xs = iter(xs)
     ys = iter(ys)
@@ -39,7 +55,8 @@ def iter_merge(xs, ys):
 def lifted_sum(fs):
     return lambda *args: sum(f(*args) for f in fs)
 
-def parametric_total_probabilities(xps)
+
+def parametric_total_probabilities(xps):
     """
     Takes a list of tuples (x, p) and sums the probabilities (p) of all equal x. Then it returns a list
     in which x appears only once.

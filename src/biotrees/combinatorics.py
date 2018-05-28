@@ -1,20 +1,4 @@
-def subsets_with_k_elements(S, k):
-    """
-    Gives a list with all the sublists of S with k elements.
-    :param S: `list` instance.
-    :param k: `int` instance.
-    :return: `list` instance.
-    """
-    if k == 0:
-        return
-    elif k == 1:
-        for x in S:
-            yield [x]
-    else:
-        for i in range(0, len(S)):
-            s = S[i + 1:]
-            for x in subsets_with_k_elements(s, k - 1):
-                yield [S[i]] + x
+from itertools import permutations, combinations
 
 
 def set_minus(L,l):
@@ -53,7 +37,7 @@ def subsets_with_k_elements_that_contain_subset_s(S, k, s):
     elif k == len(s):
         yield s
     else:
-        for x in subsets_with_k_elements(set_minus(S, s), k - len(s)):
+        for x in combinations(set(S) - set(s), k - len(s)):
             yield s + x
 
 
@@ -69,9 +53,9 @@ def pairs_of_disjoint_subsets_with_k_elements(S, k):  # los elementos son ordena
         return []
     else:
         pairs = []
-        for s1 in subsets_with_k_elements(S, k):
-            Sminuss1 = set_minus(S, s1)
-            for s2 in subsets_with_k_elements(Sminuss1, k):
+        for s1 in combinations(S, k):
+            Sminuss1 = set(S) - set(s1)
+            for s2 in combinations(Sminuss1, k):
                 if s1[0] < s2[0]:
                     pairs.append((s1, s2))
                 elif s2[0] < s1[0]:
@@ -89,7 +73,7 @@ def pairs_of_subsets_with_k_elements_that_share_exactly_subset_s(S, k, s):
     :param s: `list` instance.
     :return: `list` instance.
     """
-    pairs = pairs_of_disjoint_subsets_with_k_elements(set_minus(S, s), k - len(s))
+    pairs = pairs_of_disjoint_subsets_with_k_elements(set(S) - set(s), k - len(s))
     if pairs:
         return [(s1 + s, s2 + s) for s1, s2 in pairs]
     else:
@@ -105,20 +89,7 @@ def finite_bijections(A, B):
     :return: `list` instance.
     """
     if len(A) != len(B):
-        return []
-    elif not A:
-        return []
-    elif len(A) == 1:
-        return [[(A[0], B[0])]]
+        pass
     else:
-        return [[(A[0], b)] + bij for b in B
-                for bij in finite_bijections(A[1:], set_minus(B, [b]))]
-
-
-def permutations(S):
-    """
-    Gives a list with all bijections from S to itself.
-    :param S: `list` instance.
-    :return: `list` instance.
-    """
-    return finite_bijections(S, S)
+        for perm in permutations(B):
+            yield {A[i]: b for i, b in enumerate(perm)}
