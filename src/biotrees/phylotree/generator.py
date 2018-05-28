@@ -5,7 +5,7 @@ This file contains several functions that generate `PhyloTree` instances.
 from itertools import permutations
 
 from biotrees.util import and_then, iter_merge, unique
-from biotrees.phylotree import PhyloTree
+from biotrees.phylotree import PhyloTree, get_leaves_names_set
 
 
 def add_leaf_to_edge(t, leaf_id):
@@ -17,9 +17,10 @@ def add_leaf_to_edge(t, leaf_id):
     new_leaf = PhyloTree(leaf_id)
 
     if t < new_leaf:
-        return PhyloTree(None, [t, PhyloTree(leaf_id)])
+        return PhyloTree(None, [t, new_leaf])
     else:
-        return PhyloTree(None, [PhyloTree(leaf_id), t])
+        return PhyloTree(None, [new_leaf, t])
+
 
 def add_leaf_to_node(t, leaf_id):
     """
@@ -32,11 +33,14 @@ def add_leaf_to_node(t, leaf_id):
     else:
         return PhyloTree(None, list(iter_insert_tree(t.children, PhyloTree(leaf_id))))
 
+
 def iter_insert_tree(ts, t):
     yield from iter_merge_forests_sorted(ts, [t])
 
+
 def iter_merge_forests_sorted(ts, ts2):
     yield from iter_merge(ts, ts2)
+
 
 def delete_nodes_with_out_degree_one(t):
     """
@@ -50,6 +54,7 @@ def delete_nodes_with_out_degree_one(t):
             return delete_nodes_with_out_degree_one(t.children[0])
         else:
             return PhyloTree(None, [delete_nodes_with_out_degree_one(ch) for ch in t.children])
+
 
 def duplicate_leaf(t, l, newl):
     """

@@ -91,6 +91,7 @@ def leaves(t):
             for l in leaves(x):
                 yield l
 
+
 def get_leaves(t):
     """
     Returns a list with the leaves that appear in t, sorted in lexicographical order.
@@ -98,6 +99,7 @@ def get_leaves(t):
     :return: `list` instance.
     """
     return sorted(leaves(t))
+
 
 def get_leaves_names(t):
     """
@@ -107,6 +109,7 @@ def get_leaves_names(t):
     """
     return [l.leaf for l in get_leaves(t)]
 
+
 def get_leaves_names_set(t):
     """
     Returns a list with the leaves' names that appear in t, sorted in lexicographical order.
@@ -114,6 +117,7 @@ def get_leaves_names_set(t):
     :return: `list` instance.
     """
     return sorted(set(get_leaves_names(t)))
+
 
 def is_phylo(t):
     """
@@ -125,6 +129,7 @@ def is_phylo(t):
         if l[i] == l[i-1]:
             return False
     return True
+
 
 def shape_to_phylotree(shape):
     """
@@ -142,6 +147,7 @@ def shape_to_phylotree(shape):
             return PhyloTree(None, [recurse(child) for child in sh.children])
 
     return recurse(shape)
+
 
 def phylotree_to_shape(phylo):
     """

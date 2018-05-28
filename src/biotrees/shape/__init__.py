@@ -47,7 +47,6 @@ class Shape(object):
         return all(ch._is_sorted() for ch in children) and \
                all(ch1 <= ch2 for ch1, ch2 in zip(children[:-1], children[1:]))
 
-
     def _sort(self):
         """
         Sorts self using lexicographical order.
@@ -147,6 +146,7 @@ class Shape(object):
         """
         return self
 
+
 Shape.LEAF = Shape()
 
 
@@ -158,6 +158,7 @@ def is_binary(t):
     return t.is_leaf() or \
         (len(t.children) == 2 and all(is_binary(ch) for t in t.children))
 
+
 def count_leaves(t):
     """
     Returns the number of leaves in t.
@@ -168,13 +169,14 @@ def count_leaves(t):
     else:
         return sum(count_leaves(t) for t in t.children)
 
+
 def get_depth(t):
     """
     Returns an integer representing the maximal depth of the shape, from the root to one
     of its furthest leaves.
     :return: `int` instance.
     """
-    if self.is_leaf():
+    if t.is_leaf():
         return 0
     else:
         return max(get_depth(ch) for ch in t.children) + 1

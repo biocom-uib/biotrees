@@ -48,7 +48,7 @@ def phylo_to_newick_node(phylo):
     """
     if phylo.is_leaf():
         return _newick.Node.create(str(phylo.leaf))
-    return _newick.Node.create(descendants = [phylo_to_newick_node(child) for child in phylo.children])
+    return _newick.Node.create(descendants=[phylo_to_newick_node(child) for child in phylo.children])
 
 
 def trees_from_file(fname, encoding='utf8', strip_comments=False, **kw):

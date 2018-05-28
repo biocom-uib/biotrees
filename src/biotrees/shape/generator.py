@@ -15,6 +15,7 @@ def add_leaf_to_edge(t):
     """
     return Shape([Shape.LEAF, t])
 
+
 def add_leaf_to_node(t):
     """
     Returns a `Shape` instance with the same root; we have added a pending leaf to it.
@@ -26,14 +27,18 @@ def add_leaf_to_node(t):
     else:
         return Shape([Shape.LEAF] + t.children)
 
+
 def iter_insert_tree(ts, t):
     yield from iter_merge_forests_sorted(ts, [t])
+
 
 def iter_merge_forests_sorted(ts1, ts2):
     yield from iter_merge(ts1, ts2)
 
+
 def iter_replace_tree_at(ts, i, repl):
     yield from iter_insert_tree(skip_nth(ts, i), repl)
+
 
 def delete_nodes_with_out_degree_one(t):
     """
@@ -47,6 +52,7 @@ def delete_nodes_with_out_degree_one(t):
             return delete_nodes_with_out_degree_one(t.children[0])
         else:
             return Shape([delete_nodes_with_out_degree_one(ch) for ch in t.children])
+
 
 def cherry():
     return Shape([Shape.LEAF, Shape.LEAF])
