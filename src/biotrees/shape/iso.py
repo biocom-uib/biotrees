@@ -11,6 +11,7 @@ def equal(t1, t2):
 
 
 def isomorphic(t1, t2):
+    # arreglar
     """
     Since our `Shape` objects are sorted, to know whether two trees are isomorphic or not it suffices to know if
     they are equal or not.

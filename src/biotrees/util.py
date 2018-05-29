@@ -1,19 +1,23 @@
 from itertools import groupby
 
+#import biotrees.genetree.newick
+
 
 def binom2(m):
     return m * (m-1) // 2 if m >= 2 else 0
+
 
 def skip_nth(iterable, n):
     for i, x in enumerate(iterable):
         if i != n:
             yield x
 
+
 def unique(lst):
     return [k for k, _ in groupby(sorted(lst))]
 
+
 def unique_unsortable(lst):
-    #lst = sorted_by_shape(lst)
     lst = lst[:]
     i = 0
     while i < len(lst):
@@ -26,6 +30,11 @@ def unique_unsortable(lst):
 
         i += 1
     return lst
+
+
+def groupby_sorted(xs, k):
+    xs = sorted(xs, key=k)
+    return groupby(xs, key=k)
 
 
 def iter_merge(xs, ys):
@@ -56,18 +65,21 @@ def lifted_sum(fs):
     return lambda *args: sum(f(*args) for f in fs)
 
 
-def parametric_total_probabilities(xps):
+def parametric_total_probabilities(grouper):
     """
-    Takes a list of tuples (x, p) and sums the probabilities (p) of all equal x. Then it returns a list
+    Takes a list of tuples (x, p) and sums the probabilities (p) of all related x. Then it returns a list
     in which x appears only once.
     :param xps: `list` instance.
     :return: `list` instance.
     """
-    xps = sorted(xps, key = lambda tp: tp[0])
-    groups = groupby(xps, key = lambda tp: tp[0])
+    def pseudo_parametric_total_probabilities(xps):
+        groups = grouper(xps, lambda tp: tp[0])
 
-    return [(t, lifted_sum([p for _t, p in group]))
-            for t, group in groups]
+        return [(t, lifted_sum([p for _t, p in group]))
+                for t, group in groups]
+
+    return pseudo_parametric_total_probabilities
+
 
 def and_then(then):
     def wrap(f):
@@ -76,3 +88,4 @@ def and_then(then):
         return wrapped
 
     return wrap
+

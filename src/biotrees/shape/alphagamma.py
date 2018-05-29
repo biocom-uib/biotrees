@@ -1,5 +1,6 @@
 from functools import lru_cache
 from sympy import simplify
+from itertools import groupby
 
 from biotrees.shape import Shape, count_leaves, add_leaf_to_edge, add_leaf_to_node, iter_replace_tree_at
 from biotrees.util import and_then, parametric_total_probabilities
@@ -9,7 +10,7 @@ import sys
 sys.setrecursionlimit(2000)
 
 
-@and_then(parametric_total_probabilities)
+@and_then(parametric_total_probabilities(grouper=groupby_sorted))
 def alphagamma_from_t(t, prob):
     """
     Returns a list of tuples containing each shape obtained from `Shape` sh (assuming sh has probability prob) with
@@ -44,7 +45,7 @@ def alphagamma_from_t(t, prob):
 
 
 @lru_cache(maxsize=None)
-@and_then(parametric_total_probabilities)
+@and_then(parametric_total_probabilities(grouper=groupby_sorted))
 def alphagamma(n):
     """
     Returns a list of tuples containing all the shapes of n leaves that can be obtained under the Alpha-Gamma model and
