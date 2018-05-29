@@ -15,7 +15,6 @@ setrecursionlimit(2000)
 def yule_from_t(N, t, prob):
     lvs = get_leaves(t)
 
-    #m = t.count_labels()
     n = len(lvs)
 
     for l in lvs:
@@ -25,36 +24,17 @@ def yule_from_t(N, t, prob):
 
 @and_then(parametric_total_probabilities(grouper=groupby_sorted))
 def pseudo_yule(n, N):
-
-    def recurse(n, N):
         if n < 1:
             pass
         elif n == 1:
             for i in range(N):
                 yield GeneTree("1", str(i+1)), lambda: 1/N
         else:
-            for t1, prob1 in recurse(n-1, N):
+            for t1, prob1 in pseudo_yule(n-1, N):
                 for t2, prob2 in yule_from_t(N, t1, prob1):
                     yield t2, lambda prob=prob2: prob()
 
-    return recurse(n, N)
 
-
-#@and_then(parametric_total_probabilities(grouper=groupby_sorted))
-# la suma no da 1, no parece haber árboles de más... todos tienen el número de hojas que toca
-"""
-def yule(n, N):
-    tps = pseudo_yule(n, N)
-    lbls = [str(i+1) for i in range(n)]
-
-    for t, prob in tps:
-        rlbls = relabellings(t, lbls)
-        denom = len(rlbls)
-        for ti in rlbls:
-            yield ti, lambda prob=prob, ti=ti: prob() / denom
-"""
-
-#@and_then(parametric_total_probabilities(grouper=groupby_sorted))
 def yule(n, N):
     return pseudo_yule(n, N)
 

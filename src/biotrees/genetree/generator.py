@@ -4,12 +4,10 @@ This file contains several functions that generate `genetree` instances.
 from itertools import combinations
 
 from biotrees.genetree import GeneTree
-#from biotrees.genetree.iso import equal
 
 from biotrees.phylotree import count_leaves
 from biotrees.phylotree.generator import iter_insert_tree, iter_merge_forests_sorted
 
-from sympy import simplify
 from biotrees.combinatorics import finite_bijections
 from biotrees.util import and_then, unique_unsortable
 
@@ -49,28 +47,10 @@ def duplicate_leaf(t, l, newl):
             return add_leaf_to_edge(t, str(n+1), newl) if t.leaf == l.leaf else t
         else:
             genet = GeneTree(None, None, sorted([recurse(ch, l, newl, n) for ch in t.children]))
+            genet._sort()
             return genet
 
     return recurse(t, l, newl, n)
-
-
-"""
-def collapse_tree_prob_list(tps, boolfunc):
-    i = 0
-    while i < len(tps):
-        j = i+1
-        ps = [tps[i][1]]
-        while j < len(tps):
-            if boolfunc(tps[i][0], tps[j][0]):
-                ps.append(tps[j][1])
-                tps.pop(j)
-            else:
-                j += 1
-        prob = lambda *args, ps=ps: simplify(sum(p(*args) for p in ps))
-        tps[i] = (tps[i][0], prob)
-        i += 1
-    return tps
-"""
 
 
 def cherry(lf1, lf2, lbl1, lbl2):
@@ -86,6 +66,7 @@ def relabel(t, rlbl):
     else:
         return GeneTree(None, None, sorted([relabel(ch, rlbl) for ch in t.children]))
 
+
 @and_then(unique_unsortable)
 def relabellings(t, s):
     lbls = t.label_set()
@@ -95,7 +76,6 @@ def relabellings(t, s):
         relbls = []
         for subset in combinations(s, len(lbls)):
             relbls = relbls + list(finite_bijections(lbls, subset))
-        #return unique_unsortable([relabel(t, relbl) for relbl in relbls])
         return [relabel(t, relbl) for relbl in relbls]
 
 
