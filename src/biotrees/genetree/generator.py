@@ -20,7 +20,7 @@ def add_leaf_to_edge(t, leaf_id, lbl):
     """
     new_leaf = GeneTree(leaf_id, lbl)
 
-    if t.is_leaf and t.leaf < new_leaf.leaf:    # el orden en GeneTrees no acaba de ir muy allá
+    if t.is_leaf() and t.label < new_leaf.label:    # el orden en GeneTrees no acaba de ir muy allá
         return GeneTree(None, None, [t, new_leaf])
     else:
         return GeneTree(None, None, [new_leaf, t])

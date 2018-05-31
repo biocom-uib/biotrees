@@ -5,6 +5,8 @@ def equal(t1, t2):
     :param t1, t2: the `Shape` objects we want to compare.
     :return: `bool` instance.
     """
+    t1._sort()  # esto a la larga tendrá que desaparecer
+    t2._sort()
     assert t1._is_sorted()
     assert t2._is_sorted()
     return t1 == t2

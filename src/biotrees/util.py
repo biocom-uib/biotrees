@@ -1,7 +1,5 @@
 from itertools import groupby
 
-#import biotrees.genetree.newick
-
 
 def binom2(m):
     return m * (m-1) // 2 if m >= 2 else 0
@@ -11,6 +9,12 @@ def skip_nth(iterable, n):
     for i, x in enumerate(iterable):
         if i != n:
             yield x
+
+
+def iter_replace_at(iterable, i, x):
+    lst = list(iterable)
+    lst[i] = x
+    return lst
 
 
 def unique(lst):
