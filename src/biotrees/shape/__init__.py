@@ -181,3 +181,38 @@ def get_depth(t):
         return 0
     else:
         return max(get_depth(ch) for ch in t.children) + 1
+
+def leaf_depths(t):
+    """
+    Returns a generator of integers representing the depth of each leaf in the tree
+    :return: generator of integers
+    """
+    if t.is_leaf():
+        yield 0
+    else:
+        for ch in t.children:
+            for depth in leaf_depths(ch):
+                yield depth+1
+
+def get_leaf_depths(t):
+    """
+    Returns a list of integers representing the depth of each leaf in the tree
+    :return: list of integers
+    """
+    return list(leaf_depths(t))
+
+def count_nodes_by_depth(t):
+    total_depth = get_depth(t)
+    nodes_by_depth = [0]*(total_depth+1)
+
+    def navigate(t2, d):
+        if not t2.is_leaf():
+            d1 = d+1
+            nodes_by_depth[d1] += len(t2.children)
+
+            for ch in t2.children:
+                navigate(ch, d1)
+
+    nodes_by_depth[0] += 1
+    navigate(t, 0)
+    return nodes_by_depth
