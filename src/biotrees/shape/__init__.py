@@ -78,11 +78,12 @@ class Shape(object):
             if c != 0:
                 return c
 
-            for i in range(0, len(self.children)):
-                c = self.children[i].compare(t2.children[i])
+            for t1, t2 in zip(self.children, t2.children):
+                c = t1.compare(t2)
                 if c != 0:
                     return c
-            return 0
+
+            return c
 
     def __lt__(self, t2):
         """

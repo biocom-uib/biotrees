@@ -36,6 +36,35 @@ class PhyloTree(Shape):
         else:
             return PhyloTree(None, [ch.clone() for ch in self.children])
 
+    def compare_with_shape_lex(self, t2):
+        l1, l2 = self.is_leaf(), t2.is_leaf()
+        if l1 and l2:
+            if self.leaf < t2.leaf:
+                return 0, -1
+            elif self.leaf == t2.leaf:
+                return 0, 0
+            else:
+                return 0, 1
+        elif l1:
+            return -1, 0
+        elif l2:
+            return 1, 0
+
+        cs = len(self.children) - len(t2.children)
+        if cs != 0:
+            return cs, 0
+        cl_fst = 0
+
+        for ch1, ch2 in zip(self.children, t2.children):
+            cs, cl = ch1.compare_with_shape_lex(ch2)
+
+            if cs != 0:
+                return cs, 0
+            if cl_fst == 0:
+                cl_fst = cl
+
+        return cs, cl_fst
+
     def compare(self, t2): # cambiar comentarios
         """
         Compare self with another `Shape` object. We use lexicographical order in order to compare two `Shape` instances.
@@ -44,25 +73,16 @@ class PhyloTree(Shape):
         :param t2: the `Shape` object against which we compare self.
         :return: `int` instance.
         """
-        if self.is_leaf() != t2.is_leaf():
-            return (not self.is_leaf()) - (not t2.is_leaf())
 
-        if self.is_leaf():
-            if self.leaf < t2.leaf:
-                return -1
-            elif self.leaf > t2.leaf:
-                return 1
-            else:
-                return 0
+        c = self.compare_with_shape_lex(t2)
+        # assert c[0] == self.shape().compare(t2.shape()), str(self) + '    ' + str(t2) + '     ' + str(c)
 
-        if len(self.children) != len(t2.children):
-            return len(self.children) - len(t2.children)
-
-        for t1, t2 in zip(self.children, t2.children):
-            c = t1.compare(t2)
-            if c != 0:
-                return c
-        return 0
+        if c < (0,0):
+            return -1
+        elif c > (0,0):
+            return 1
+        else:
+            return 0
 
     def __str__(self):
         from biotrees.phylotree.newick import to_newick
