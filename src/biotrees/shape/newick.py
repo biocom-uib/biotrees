@@ -4,7 +4,7 @@ In order to read Newick codes we import the newick module from https://github.co
 
 from biotrees.shape import Shape
 
-from biotrees import _newick
+import newick as _newick
 
 
 def to_newick(shape):

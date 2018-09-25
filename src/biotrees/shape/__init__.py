@@ -134,7 +134,7 @@ class Shape(object):
         return self.compare(t2) > 0
 
     def __str__(self):
-        from .newick import to_newick
+        from biotrees.shape.newick import to_newick
         return to_newick(self)
 
     def __repr__(self):

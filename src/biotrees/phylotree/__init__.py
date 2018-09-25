@@ -1,8 +1,6 @@
 """
 For us, a Phylogenetic Tree (a `PhyloTree` instance) is a special case of Shape in which names of leaves can be
 distinguished.
-We import modules Shape.py and _newick.py; the latter will be used for reading Newick code in string format and turning
-it into trees; it can be found in https://github.com/glottobank/python-newick.
 """
 
 from biotrees.shape import Shape, is_binary, count_leaves, get_depth

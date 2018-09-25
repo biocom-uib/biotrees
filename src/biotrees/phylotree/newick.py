@@ -1,5 +1,5 @@
 from biotrees.phylotree import PhyloTree
-from biotrees import _newick
+import newick as _newick
 
 
 def to_newick(phylo):
