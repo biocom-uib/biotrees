@@ -1,3 +1,4 @@
+from collections import Hashable
 from itertools import groupby
 
 
@@ -9,24 +10,24 @@ def skip_nth(iterable, n):
         if i != n:
             yield x
 
-def unique(lst):
-    return [k for k, _ in groupby(sorted(lst))]
+def unique(lst, sort=False):
+    """
+    Checks if the first element in lst is hashable. If it is, lst is converted
+    to a set and then back to a list. Otherwise it is first sorted and then
+    linearly traversed skipping repeated items.
+    """
+    lst = list(lst)
+    if lst and isinstance(lst[0], Hashable):
+        return sorted(set(lst)) if sort else list(set(lst))
+    else:
+        return [k for k, _ in groupby(sorted(lst))]
 
 def unique_unsortable(lst):
-    #lst = sorted_by_shape(lst)
-    lst = lst[:]
-    i = 0
-    while i < len(lst):
-        j = i + 1
-        while j < len(lst):
-            if lst[i] == lst[j]:
-                lst.pop(j)
-            else:
-                j += 1
-
-        i += 1
-    return lst
-
+    ret = []
+    for x in list(lst):
+        if x not in ret:
+            ret.append(x)
+    return ret
 
 def iter_merge(xs, ys):
     xs = iter(xs)
@@ -53,7 +54,7 @@ def iter_merge(xs, ys):
 
 
 def lifted_sum(fs):
-    return lambda *args: sum(f(*args) for f in fs)
+    return lambda *args, **kwargs: sum(f(*args, **kwargs) for f in fs)
 
 
 def parametric_total_probabilities(xps):
