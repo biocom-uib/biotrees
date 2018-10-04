@@ -4,6 +4,7 @@ from math import factorial
 import biotrees.util as util
 
 class TestUtil(unittest.TestCase):
+
     def test_binom2(self):
         self.assertEqual(
             util.binom2(5),
@@ -24,6 +25,7 @@ class TestUtil(unittest.TestCase):
             util.binom2(1),
             0)
 
+
     def test_skip_nth(self):
         self.assertEqual(
             list(util.skip_nth(range(1,10), 3)),
@@ -36,6 +38,7 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(
             list(util.skip_nth([], 0)),
             [])
+
 
     def test_unique(self):
         self.assertEqual(
@@ -58,6 +61,7 @@ class TestUtil(unittest.TestCase):
             util.unique([], sort=True),
             [])
 
+
     def test_unique_unsortable(self):
         self.assertEqual(
             util.unique_unsortable([1,2,2,4,2,2,3,4,3,2,1,2,4,1,3,2,1,4,1,2,4,1,2,1,1,1]),
@@ -66,6 +70,7 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(
             util.unique_unsortable([[], {}, set(), {}, [], set(), [1], {'a': {}}]),
             [[], {}, set(), [1], {'a': {}}])
+
 
     def test_iter_merge(self):
         self.assertEqual(
@@ -108,6 +113,7 @@ class TestUtil(unittest.TestCase):
             util.lifted_sum([lambda x: x]*2)(5),
             5*2)
 
+
     def test_parametric_total_probabilities(self):
         def eval_ps(tps, *args, **kwargs):
             return [(t, p(*args, **kwargs)) for t, p in tps]
@@ -133,6 +139,7 @@ class TestUtil(unittest.TestCase):
             eval_ps(r, 2, b=3),
             [('a', 2+3+1 + 2-3), ('b', 2*3*1)])
 
+
     def test_and_then(self):
         def times2(x):
             return x*2
@@ -142,6 +149,10 @@ class TestUtil(unittest.TestCase):
         def f(x):
             return x
 
-        self.assertEqual(f(1), (1+1)*2)
+        self.assertEqual(
+            f(1),
+            (1+1)*2)
 
-        self.assertEqual(util.and_then(times2)(f)(2), (2+1)*2*2)
+        self.assertEqual(
+            util.and_then(times2)(f)(2),
+            (2+1)*2*2)

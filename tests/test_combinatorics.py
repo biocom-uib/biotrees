@@ -18,6 +18,7 @@ SUBSAMPLES = SUBSETS + SUBLISTS + SUBTUPLES
 
 
 class TestCombinatorics(unittest.TestCase):
+
     def test_subset(self):
         for i in range(len(SAMPLES)):
             S = SAMPLES[i]
@@ -29,6 +30,7 @@ class TestCombinatorics(unittest.TestCase):
 
         self.assertFalse(
             combinatorics.subset([1], {}))
+
 
     def test_subsets_with_k_elements_that_contain_subset_s(self):
         for i in range(len(SAMPLES)):
@@ -53,6 +55,7 @@ class TestCombinatorics(unittest.TestCase):
 
                     self.assertTrue(
                         all(len(sr) == k for sr in r))
+
 
     def test_pairs_of_disjoint_subsets_with_k_elements(self):
         for i in range(len(SAMPLES)):
@@ -80,6 +83,7 @@ class TestCombinatorics(unittest.TestCase):
 
                 self.assertTrue(
                     all(len(sr) == k for pair in r for sr in pair))
+
 
     def test_pairs_of_subsets_with_k_elements_that_share_exactly_subset_s(self):
         for i in range(len(SAMPLES)):
