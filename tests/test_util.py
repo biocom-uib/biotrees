@@ -3,6 +3,7 @@ import unittest
 from math import factorial
 import biotrees.util as util
 
+
 class TestUtil(unittest.TestCase):
 
     def test_binom2(self):

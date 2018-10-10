@@ -54,10 +54,6 @@ def delete_nodes_with_out_degree_one(t):
             return Shape([delete_nodes_with_out_degree_one(ch) for ch in t.children])
 
 
-def cherry():
-    return Shape([Shape.LEAF, Shape.LEAF])
-
-
 @and_then(unique)
 def all_binary_trees_from_t(t):
     """
@@ -124,7 +120,7 @@ def all_trees_with_n_leaves(n):
     elif n == 1:
         yield Shape.LEAF
     elif n == 2:
-        yield cherry()
+        yield Shape.CHERRY
     else:
         for t in all_trees_with_n_leaves(n-1):
             yield from all_trees_from_t(t)

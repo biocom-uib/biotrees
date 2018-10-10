@@ -11,6 +11,7 @@ __all__ = ['Shape']
 
 class Shape(object):
     LEAF = None # filled in after class def
+    CHERRY = None # filled in after class def
 
     """
     A `Shape` instance is either a leaf or a list of `Shape` instances that hang from a root.
@@ -149,6 +150,7 @@ class Shape(object):
 
 
 Shape.LEAF = Shape()
+Shape.CHERRY = Shape([Shape.LEAF, Shape.LEAF])
 
 
 def is_binary(t):
