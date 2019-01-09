@@ -1,5 +1,5 @@
 from biotrees.phylotree import PhyloTree
-import biotrees._newick as _newick
+import newick as _newick
 
 
 def to_newick(phylo):
@@ -26,7 +26,7 @@ def from_newick_list(nwk):
     :param nwk: a string representing a list of Newick codes.
     :return: `list` instance.
     """
-    return[newick_node_to_phylo(n) for n in _newick.loads(nwk)]
+    return [newick_node_to_phylo(n) for n in _newick.loads(nwk)]
 
 
 def newick_node_to_phylo(node):
@@ -46,9 +46,9 @@ def phylo_to_newick_node(phylo):
     :param phylo: `PhyloTree` instance.
     :return: `Node` instance.
     """
-    if phylo.is_leaf:
+    if phylo.is_leaf():
         return _newick.Node.create(str(phylo.leaf))
-    return _newick.Node.create(descendants = [phylo_to_newick_node(child) for child in phylo.children])
+    return _newick.Node.create(descendants=[phylo_to_newick_node(child) for child in phylo.children])
 
 
 def trees_from_file(fname, encoding='utf8', strip_comments=False, **kw):

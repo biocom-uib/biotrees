@@ -5,12 +5,12 @@ def equal(t1, t2):
     :param t1, t2: the `Shape` objects we want to compare.
     :return: `bool` instance.
     """
-    t1.sort()
-    t2.sort()
+    assert t1._is_sorted()
+    assert t2._is_sorted()
     return t1 == t2
 
 
-def iso(t1, t2):
+def isomorphic(t1, t2):
     """
     Since our `Shape` objects are sorted, to know whether two trees are isomorphic or not it suffices to know if
     they are equal or not.

@@ -1,13 +1,18 @@
+from biotrees.util import iter_merge, skip_nth
+
 """
 A `Shape` represents a topological tree. The data structure implemented here is of recursive type: a `Shape` can be
 either a leaf or a list of `Shape` objects. Leaves are not distinguishable, but we know that they are leaves.
 We choose a sorted shape to be the class representant of all shapes isomorphic to it.
 """
 
-__all__ = ['Shape', 'sorted_tree', 'sorted_by_shape']
+__all__ = ['Shape']
 
 
 class Shape(object):
+    LEAF = None # filled in after class def
+    CHERRY = None # filled in after class def
+
     """
     A `Shape` instance is either a leaf or a list of `Shape` instances that hang from a root.
     """
@@ -18,29 +23,40 @@ class Shape(object):
         :param children: `list` instance.
         :return: `Shape` instance.
         """
-        self.is_leaf  = children is None
+        assert children is None or len(children) > 0
         self.children = children
-        assert self.is_leaf or len(children) > 0
+
+    def is_leaf(self):
+        return self.children is None
 
     def clone(self):
         """
         Returns `Shape` instance which is exactly the same as self.
         :return: `Shape` instance.
         """
-        if self.is_leaf:
-            return Shape()
+        if self.is_leaf():
+            return Shape.LEAF
         else:
             return Shape([ch.clone() for ch in self.children])
 
-    def sort(self):
+    def _is_sorted(self):
+        if self.is_leaf():
+            return True
+
+        children = self.children
+
+        return all(ch._is_sorted() for ch in children) and \
+               all(ch1 <= ch2 for ch1, ch2 in zip(children[:-1], children[1:]))
+
+    def _sort(self):
         """
         Sorts self using lexicographical order.
         """
-        if self.is_leaf:
+        if self.is_leaf():
             return
 
         for t in self.children:
-            t.sort()
+            t._sort()
 
         self.children.sort()
 
@@ -52,22 +68,23 @@ class Shape(object):
         :param t2: `Shape` instance.
         :return: `int` instance.
         """
-        if self.is_leaf and t2.is_leaf:
+        if self.is_leaf() and t2.is_leaf():
             return 0
-        elif self.is_leaf:
+        elif self.is_leaf():
             return -1
-        elif t2.is_leaf:
+        elif t2.is_leaf():
             return 1
         else:
             c = len(self.children) - len(t2.children)
             if c != 0:
                 return c
 
-            for i in range(0, len(self.children)):
-                c = self.children[i].compare(t2.children[i])
+            for t1, t2 in zip(self.children, t2.children):
+                c = t1.compare(t2)
                 if c != 0:
                     return c
-            return 0
+
+            return c
 
     def __lt__(self, t2):
         """
@@ -117,48 +134,12 @@ class Shape(object):
         """
         return self.compare(t2) > 0
 
-    def is_symmetric(self):
-        """
-        Returns True if the root of self is a symmetric node, and False otherwise. If self is a leaf, it returns True:
-        ex falso quodlibet.
-        :return: `bool` instance.
-        """
-        if not self.is_leaf:
-            return all(self.children[0].iso(x) for x in self.children)
-        else:
-            return True
+    def __str__(self):
+        from biotrees.shape.newick import to_newick
+        return to_newick(self)
 
-    def is_binary(self):
-        """
-        Returns True if self is a binary shape.
-        :return: `bool` instance
-        """
-        if self.is_leaf:
-            return True
-        else:
-            return len(self.children) == 2 and all(t.is_binary() for t in self.children)
-
-    def count_symmetries(self):
-        """
-        Returns the number of symmetric interior nodes in self.
-        :return: `int` instance.
-        """
-        if self.is_leaf:
-            return 0
-        elif all(self.children[0].iso(x) for x in self.children):
-            return 1 + sum(x.count_symmetries() for x in self.children)
-        else:
-            return sum(x.count_symmetries() for x in self.children)
-
-    def count_leaves(self):
-        """
-        Returns the number of leaves in self.
-        :return: `int` instance.
-        """
-        if self.is_leaf:
-            return 1
-        else:
-            return sum(x.count_leaves() for x in self.children)
+    def __repr__(self):
+        return str(self)
 
     def shape(self):
         """
@@ -167,49 +148,73 @@ class Shape(object):
         """
         return self
 
-    def get_depth(self):
-        """
-        Returns an integer representing the maximal depth of the shape, from the root to one
-        of its furthest leaves.
-        :return: `int` instance.
-        """
-        if self.is_leaf:
-            return 0
-        else:
-            return max(x.get_depth() for x in self.children) + 1
+
+Shape.LEAF = Shape()
+Shape.CHERRY = Shape([Shape.LEAF, Shape.LEAF])
 
 
-def delete_nodes_with_out_degree_one(t):
+def is_binary(t):
     """
-    Deletes all nodes in the input `Shape` instance with only one child, for they are redundant
-    :return: `Shape` instance
+    Returns True if t is a binary shape.
+    :return: `bool` instance
     """
-    if t.is_leaf:
-        return t
+    return t.is_leaf() or \
+        (len(t.children) == 2 and all(is_binary(ch) for t in t.children))
+
+
+def count_leaves(t):
+    """
+    Returns the number of leaves in t.
+    :return: `int` instance.
+    """
+    if t.is_leaf():
+        return 1
     else:
-        if len(t.children) == 1:
-            return t.children[0].delete_nodes_with_out_degree_one()
-        else:
-            return Shape([t.delete_nodes_with_out_degree_one() for t in t.children])
+        return sum(count_leaves(t) for t in t.children)
 
 
-def sorted_by_shape(l):
+def get_depth(t):
     """
-    Takes a list of lists or tuples whose first component is a Shape instance. It sorts the
-    list according only to its Shape-induced order in the first component of each element.
-    :param: `list` instance.
-    :return: `list` instance.
+    Returns an integer representing the maximal depth of the shape, from the root to one
+    of its furthest leaves.
+    :return: `int` instance.
     """
-    l1 = sorted([(l[i][0], i) for i in range(0, len(l))])
-    return [l[tup[1]] for tup in l1]
+    if t.is_leaf():
+        return 0
+    else:
+        return max(get_depth(ch) for ch in t.children) + 1
 
+def leaf_depths(t):
+    """
+    Returns a generator of integers representing the depth of each leaf in the tree
+    :return: generator of integers
+    """
+    if t.is_leaf():
+        yield 0
+    else:
+        for ch in t.children:
+            for depth in leaf_depths(ch):
+                yield depth+1
 
-def sorted_tree(t1):
+def get_leaf_depths(t):
     """
-    Returns a sorted clone of t1.
-    :param t1: `Shape` instance
-    :return: `Shape` instance
+    Returns a list of integers representing the depth of each leaf in the tree
+    :return: list of integers
     """
-    t2 = t1.clone()
-    t2.sort()
-    return t2
+    return list(leaf_depths(t))
+
+def count_nodes_by_depth(t):
+    total_depth = get_depth(t)
+    nodes_by_depth = [0]*(total_depth+1)
+
+    def navigate(t2, d):
+        if not t2.is_leaf():
+            d1 = d+1
+            nodes_by_depth[d1] += len(t2.children)
+
+            for ch in t2.children:
+                navigate(ch, d1)
+
+    nodes_by_depth[0] += 1
+    navigate(t, 0)
+    return nodes_by_depth
