@@ -24,7 +24,6 @@ class TestPhyloTree(unittest.TestCase):
         self.assertFalse(C12.is_leaf())
         self.assertEqual(len(C12.children), 2)
 
-
     def test_clone(self):
         self.assertEqual(L1, L1.clone())
 
@@ -35,7 +34,6 @@ class TestPhyloTree(unittest.TestCase):
 
         C12.clone().children.append(L3)
         self.assertEqual(len(C12.children), 2)
-
 
     def test_compare_with_shape_lex(self):
         self.assertEqual(
@@ -86,7 +84,6 @@ class TestPhyloTree(unittest.TestCase):
         self.assertEqual(
             PhyloTree(None, [L1, C31]).shape(),
             Shape([Shape.LEAF, Shape.CHERRY]))
-
 
     def test_compare_shape(self):
         self.assertEqual(

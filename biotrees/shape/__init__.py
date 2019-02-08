@@ -218,3 +218,9 @@ def count_nodes_by_depth(t):
     nodes_by_depth[0] += 1
     navigate(t, 0)
     return nodes_by_depth
+
+def rooted_deg(t):
+    return len(t.children)
+
+def unrooted_deg(t):
+    return rooted_deg(t) + 1
