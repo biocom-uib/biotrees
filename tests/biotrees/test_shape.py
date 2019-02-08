@@ -1,6 +1,6 @@
 import unittest
 
-from biotrees.shape import Shape, LEAF, CHERRY
+from biotrees.shape import Shape, LEAF, CHERRY, rooted_deg, unrooted_deg
 
 
 class TestShape(unittest.TestCase):
@@ -11,7 +11,6 @@ class TestShape(unittest.TestCase):
 
         self.assertFalse(CHERRY.is_leaf())
         self.assertEqual(len(CHERRY.children), 2)
-
 
     def test_clone(self):
         self.assertEqual(LEAF, LEAF.clone())
@@ -45,4 +44,14 @@ class TestShape(unittest.TestCase):
             Shape([LEAF, CHERRY]),
             Shape([Shape.LEAF, Shape.CHERRY]))
 
+    def test_deg(self):
+        self.assertTrue(LEAF)
+        self.assertEqual(rooted_deg(self), 0)
+        self.assertEqual(unrooted_deg(self), 1)
+        self.assertEqual(unrooted_deg(self, True), 0)
+
+        self.assertTrue(CHERRY)
+        self.assertEqual(rooted_deg(self), 2)
+        self.assertEqual(unrooted_deg(self), 3)
+        self.assertEqual(unrooted_deg(self, True), 3)
 

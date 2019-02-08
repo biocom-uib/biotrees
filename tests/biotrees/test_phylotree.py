@@ -15,6 +15,7 @@ C21 = PhyloTree(None, [L2,L1])
 C32 = PhyloTree(None, [L3,L2])
 C31 = PhyloTree(None, [L3,L1])
 
+
 class TestPhyloTree(unittest.TestCase):
 
     def test_init(self):
