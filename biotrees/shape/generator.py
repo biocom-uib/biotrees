@@ -124,3 +124,18 @@ def all_trees_with_n_leaves(n):
     else:
         for t in all_trees_with_n_leaves(n-1):
             yield from all_trees_from_t(t)
+
+
+def max_balanced(n):
+    """
+    Returns a maximum balanced `Shape` with n leaves.
+    :param n: `int` instance.
+    :return: `Shape` instance.
+    """
+    if n == 1:
+        return Shape.LEAF
+    elif n == 2:
+        return Shape.CHERRY
+    else:
+        s = n % 2
+        return Shape([max_balanced((n-s)//2 + s), max_balanced((n-s)//2)])
