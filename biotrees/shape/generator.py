@@ -126,6 +126,7 @@ def all_trees_with_n_leaves(n):
             yield from all_trees_from_t(t)
 
 
+@lru_cache(maxsize=None)
 def max_balanced(n):
     """
     Returns a maximum balanced `Shape` with n leaves.
