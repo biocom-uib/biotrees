@@ -139,7 +139,7 @@ def binary_max_balanced(n):
         return Shape.CHERRY
     else:
         s = n % 2
-        return Shape([binary_max_balanced((n - s) // 2 + s), binary_max_balanced((n - s) // 2)])
+        return Shape([binary_max_balanced((n - s) // 2), binary_max_balanced((n - s) // 2 + s)])
 
 
 @lru_cache(maxsize=None)
