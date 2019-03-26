@@ -133,12 +133,7 @@ def star(n):
     :param n: `int` instance.
     :return: `Shape` instance.
     """
-    if n == 1:
-        return Shape.LEAF
-    elif n == 2:
-        return Shape.CHERRY
-    else:
-        return add_leaf_to_node(star(n-1))
+    return Shape([Shape.LEAF for _ in range(n)])
 
 
 @lru_cache(maxsize=None)
