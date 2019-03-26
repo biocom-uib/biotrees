@@ -127,7 +127,7 @@ def all_trees_with_n_leaves(n):
 
 
 @lru_cache(maxsize=None)
-def max_balanced(n):
+def binary_max_balanced(n):
     """
     Returns a maximum balanced `Shape` with n leaves.
     :param n: `int` instance.
@@ -139,4 +139,19 @@ def max_balanced(n):
         return Shape.CHERRY
     else:
         s = n % 2
-        return Shape([max_balanced((n-s)//2 + s), max_balanced((n-s)//2)])
+        return Shape([binary_max_balanced((n - s) // 2 + s), binary_max_balanced((n - s) // 2)])
+
+
+@lru_cache(maxsize=None)
+def comb(n):
+    """
+    Returns a comb `Shape` with n leaves.
+    :param n: `int` instance.
+    :return: `Shape` instance.
+    """
+    if n == 1:
+        return Shape.LEAF
+    elif n == 2:
+        return Shape.CHERRY
+    else:
+        return Shape([Shape.LEAF, comb(n-1)])
