@@ -126,7 +126,6 @@ def all_trees_with_n_leaves(n):
             yield from all_trees_from_t(t)
 
 
-@lru_cache(maxsize=None)
 def star(n):
     """
     Returns a star `Shape` with n leaves.
