@@ -127,9 +127,24 @@ def all_trees_with_n_leaves(n):
 
 
 @lru_cache(maxsize=None)
+def star(n):
+    """
+    Returns a star `Shape` with n leaves.
+    :param n: `int` instance.
+    :return: `Shape` instance.
+    """
+    if n == 1:
+        return Shape.LEAF
+    elif n == 2:
+        return Shape.CHERRY
+    else:
+        return add_leaf_to_node(star(n-1))
+
+
+@lru_cache(maxsize=None)
 def binary_max_balanced(n):
     """
-    Returns a maximum balanced `Shape` with n leaves.
+    Returns a binary maximum balanced `Shape` with n leaves.
     :param n: `int` instance.
     :return: `Shape` instance.
     """
