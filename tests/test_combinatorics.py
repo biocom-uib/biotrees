@@ -25,6 +25,7 @@ class TestCombinatorics(unittest.TestCase):
             for s in SUBSAMPLES[i]:
                 self.assertTrue(
                     combinatorics.subset(s, S))
+                print(s, S)
                 self.assertEqual(
                     combinatorics.subset(S, s), s == S)
 
