@@ -10,6 +10,9 @@ def skip_nth(iterable, n):
         if i != n:
             yield x
 
+def last(iterable):
+    return list(iterable)[-1]
+
 def unique(lst, sort=False):
     """
     Checks if the first element in lst is hashable. If it is, lst is converted
@@ -52,10 +55,8 @@ def iter_merge(xs, ys):
         yield cur2
         cur2 = next(ys, None)
 
-
 def lifted_sum(fs):
     return lambda *args, **kwargs: sum(f(*args, **kwargs) for f in fs)
-
 
 def parametric_total_probabilities(xps):
     """
