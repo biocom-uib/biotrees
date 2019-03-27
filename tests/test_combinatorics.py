@@ -23,10 +23,14 @@ class TestCombinatorics(unittest.TestCase):
         for i in range(len(SAMPLES)):
             S = SAMPLES[i]
             for s in SUBSAMPLES[i]:
-                self.assertTrue(
-                    combinatorics.subset(s, S))
-                self.assertEqual(
-                    combinatorics.subset(S, s), s == S)
+                try:
+                    self.assertTrue(
+                        combinatorics.subset(s, S))
+                    self.assertEqual(
+                        combinatorics.subset(S, s), s == S)
+                except AssertionError:
+                    print(s, S)
+                    raise
 
         self.assertFalse(
             combinatorics.subset([1], {}))
