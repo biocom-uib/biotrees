@@ -9,7 +9,7 @@ from biotrees.shape.iso import isomorphic as isomorphic_shape
 from biotrees import combinatorics
 
 
-def subtree(t, lvs):
+def subtree(t, lvs):    # FIXME: I'm not sure the resulting tree is sorted...
     """
     Returns the subtree of t with the given leaves.
     :param t: `PhyloTree` instance.
