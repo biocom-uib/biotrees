@@ -68,7 +68,7 @@ def min_colless(n):
         for n1, n2 in min_colless_root(n):
             ts = unique([Shape(sorted([t1, t2])) for t1 in min_colless(n1)
                          for t2 in min_colless(n2)])
-            tss = tss + ts
+            tss.extend(ts)
         return tss
 
 
