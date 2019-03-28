@@ -149,10 +149,11 @@ def is_phylo(t):
     return True
 
 
-def shape_to_phylotree(shape):
+def shape_to_phylotree(shape, gen=str):
     """
     Returns a `PhyloTree` instance with the same shape as the one given as a parameter.
     :param shape: `Shape` instance.
+    :param gen: `function` to call for each leaf index to generate the new leaf name.
     :return: `PhyloTree` instance.
     """
     i = [-1]
@@ -160,7 +161,7 @@ def shape_to_phylotree(shape):
     def recurse(sh):
         if sh.is_leaf():
             i[0] += 1
-            return PhyloTree(str(i[0]))
+            return PhyloTree(gen(i[0]))
         else:
             return PhyloTree(None, [recurse(child) for child in sh.children])
 

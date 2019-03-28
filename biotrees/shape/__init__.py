@@ -29,6 +29,10 @@ class Shape(object):
     def is_leaf(self):
         return self.children is None
 
+    def is_cherry(self):
+        chs = self.children
+        return len(chs) == 2 and all(ch.is_leaf() for ch in chs)
+
     def clone(self):
         """
         Returns `Shape` instance which is exactly the same as self.
@@ -159,7 +163,7 @@ def is_binary(t):
     :return: `bool` instance
     """
     return t.is_leaf() or \
-        (len(t.children) == 2 and all(is_binary(ch) for t in t.children))
+        (len(t.children) == 2 and all(is_binary(ch) for ch in t.children))
 
 
 def count_leaves(t):
@@ -184,6 +188,7 @@ def get_depth(t):
     else:
         return max(get_depth(ch) for ch in t.children) + 1
 
+
 def leaf_depths(t):
     """
     Returns a generator of integers representing the depth of each leaf in the tree
@@ -196,12 +201,14 @@ def leaf_depths(t):
             for depth in leaf_depths(ch):
                 yield depth+1
 
+
 def get_leaf_depths(t):
     """
     Returns a list of integers representing the depth of each leaf in the tree
     :return: list of integers
     """
     return list(leaf_depths(t))
+
 
 def count_nodes_by_depth(t):
     total_depth = get_depth(t)
