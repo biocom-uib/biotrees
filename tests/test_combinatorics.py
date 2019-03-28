@@ -26,7 +26,7 @@ class TestCombinatorics(unittest.TestCase):
                 self.assertTrue(
                     combinatorics.subset(s, S))
                 self.assertEqual(
-                    combinatorics.subset(S, s), set(s) == set(S))
+                    combinatorics.subset(S, s), s == S)
 
         self.assertFalse(
             combinatorics.subset([1], {}))

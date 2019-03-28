@@ -126,19 +126,9 @@ def all_trees_with_n_leaves(n):
             yield from all_trees_from_t(t)
 
 
-def star(n):
+def max_balanced(n):
     """
-    Returns a star `Shape` with n leaves.
-    :param n: `int` instance.
-    :return: `Shape` instance.
-    """
-    return Shape([Shape.LEAF for _ in range(n)])
-
-
-@lru_cache(maxsize=None)
-def binary_max_balanced(n):
-    """
-    Returns a binary maximum balanced `Shape` with n leaves.
+    Returns a maximum balanced `Shape` with n leaves.
     :param n: `int` instance.
     :return: `Shape` instance.
     """
@@ -148,19 +138,4 @@ def binary_max_balanced(n):
         return Shape.CHERRY
     else:
         s = n % 2
-        return Shape([binary_max_balanced((n - s) // 2), binary_max_balanced((n - s) // 2 + s)])
-
-
-@lru_cache(maxsize=None)
-def comb(n):
-    """
-    Returns a comb `Shape` with n leaves.
-    :param n: `int` instance.
-    :return: `Shape` instance.
-    """
-    if n == 1:
-        return Shape.LEAF
-    elif n == 2:
-        return Shape.CHERRY
-    else:
-        return Shape([Shape.LEAF, comb(n-1)])
+        return Shape([max_balanced((n-s)//2 + s), max_balanced((n-s)//2)])
