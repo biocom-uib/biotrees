@@ -4,8 +4,6 @@ from biotrees.shape import Shape, count_leaves
 from biotrees.shape.generator import comb, binary_max_balanced
 
 from biotrees.phylotree import PhyloTree, shape_to_phylotree, phylotree_to_shape
-from biotrees.phylotree.subtree import subtree
-
 
 def log2(n):
     k = int.bit_length(n) - 1
