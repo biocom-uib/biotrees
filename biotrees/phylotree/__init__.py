@@ -37,6 +37,7 @@ class PhyloTree(Shape):
     def compare_with_shape_lex(self, t2):
         l1, l2 = self.is_leaf(), t2.is_leaf()
         if l1 and l2:
+
             if self.leaf < t2.leaf:
                 return 0, -1
             elif self.leaf == t2.leaf:

@@ -225,3 +225,7 @@ def count_nodes_by_depth(t):
     nodes_by_depth[0] += 1
     navigate(t, 0)
     return nodes_by_depth
+
+
+def root_join(ts):
+    return Shape(sorted(ts))

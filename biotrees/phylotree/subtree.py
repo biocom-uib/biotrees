@@ -29,7 +29,9 @@ def subtree(t, lvs):    # FIXME: I'm not sure the resulting tree is sorted...
                     if subt:
                         children.append(subt)
             if children:
-                return delete_nodes_with_out_degree_one(PhyloTree(None, children))
+                phyl = delete_nodes_with_out_degree_one(PhyloTree(None, children))
+                phyl._sort()
+                return phyl
 
 
 def all_pairs_of_subtrees_of_m_leaves_that_share_k_leaves(t, m, k):
