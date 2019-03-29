@@ -38,7 +38,12 @@ def max_sackin(n):
     return [comb(n)]
 
 
-def minsackin(n):   # horrible e hiper costoso, esta Fischer...
+def min_sackin(n):
+    """
+    Returns all the `Shape` instances that attain the minimum Sackin index with `int` n leaves.
+    :param n: `int` instance.
+    :return: `list` instance.
+    """
     k = log2(n)
     nk = 2**k
 
@@ -47,38 +52,38 @@ def minsackin(n):   # horrible e hiper costoso, esta Fischer...
     else:
         ts = []
 
-        for t in minsackin(n+1):
-            ts = ts + cherrypicking(t, k)
+        for t in min_sackin(n + 1):
+            ts = ts + cherry_picking(t, k)
 
-        return ts
+        return unique(sorted(ts))
 
 
-def cherrypicking(tree, k):     # y si encuentra la hoja i pero no es una cherry a max prof?
-                                # devolver también un booleano?
-                                # trabajar con maybe
+def cherry_picking(tree, k):
     if tree.is_leaf():
         return [tree]
     elif tree == Shape.CHERRY:
         return [Shape.LEAF]
     else:
 
-        def go(t, i, d):
+        def go(t, i, d):    # for binary eyes only
 
             if d != k and not (t.is_leaf() or t.is_cherry()):
                 chs = [go(ch, i, d + 1) for ch in t.children]
                 if any(ch is None for ch in chs):
                     return None
                 else:
-                    return PhyloTree(None, chs)
+                    return PhyloTree(None, sorted(chs))
 
-            elif d != k and (t == PhyloTree(i)
-                             or t == PhyloTree(None, [PhyloTree(i), PhyloTree(i + 1)])
+            elif d != k and (t == PhyloTree(None, [PhyloTree(i), PhyloTree(i + 1)])
                              or t == PhyloTree(None, [PhyloTree(i - 1), PhyloTree(i)])):
                 return None
 
             elif d == k and (t == PhyloTree(None, [PhyloTree(i), PhyloTree(i + 1)])
                              or t == PhyloTree(None, [PhyloTree(i - 1), PhyloTree(i)])):
                 return PhyloTree(i)
+
+            elif t == PhyloTree(i):
+                return None
 
             else:
                 return t
@@ -88,34 +93,10 @@ def cherrypicking(tree, k):     # y si encuentra la hoja i pero no es una cherry
 
         ts = []
 
-        for i in range(n-1):
+        for i in range(n):
             t = go(phyl, i, 1)
 
-            if t: ts.append(t)
+            if t:
+                ts.append(phylotree_to_shape(t))
 
         return unique(sorted(ts))
-
-
-def go(t, i, d, k):        # I think we are assuming the entry is a binary tree
-    print(i)
-
-    if d != k and not (t.is_leaf() or t.is_cherry()):
-        chs = [go(ch, i, d+1, k) for ch in t.children]
-        if any(ch is None for ch in chs):
-            return None
-        else:
-            return PhyloTree(None, chs)
-
-    elif d != k and (t == PhyloTree(i)
-            or t == PhyloTree(None, [PhyloTree(str(i)), PhyloTree(str(i+1))])
-            or t == PhyloTree(None, [PhyloTree(str(i-1)), PhyloTree(str(i))])):
-        print("ahoy")
-        return None
-
-    elif d == k and (t == PhyloTree(None, [PhyloTree(str(i)), PhyloTree(str(i+1))])
-            or t == PhyloTree(None, [PhyloTree(str(i-1)), PhyloTree(str(i))])):
-        return PhyloTree(i)
-
-    else:
-        print("nay")
-        return t
