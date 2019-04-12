@@ -1,5 +1,7 @@
 from collections import Hashable
 from itertools import groupby
+from functools import reduce
+import operator
 
 
 def binom2(m):
@@ -57,6 +59,9 @@ def iter_merge(xs, ys):
 
 def lifted_sum(fs):
     return lambda *args, **kwargs: sum(f(*args, **kwargs) for f in fs)
+
+def lifted_prod(fs, *args, **kwargs):
+    return reduce(operator.mul, (f(*args, **kwargs) for f in fs))
 
 def parametric_total_probabilities(xps):
     """
