@@ -5,6 +5,7 @@ from biotrees.shape.generator import comb, binary_max_balanced
 
 from biotrees.phylotree import PhyloTree, shape_to_phylotree, phylotree_to_shape
 
+
 def log2(n):
     k = int.bit_length(n) - 1
 
