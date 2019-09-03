@@ -18,5 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
         "Operating System :: OS Independent",
     ],
+    install_requires=['newick>=0.9.2', 'sympy>=1.3']
 )
 
