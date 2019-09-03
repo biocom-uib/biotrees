@@ -1,3 +1,9 @@
+"""
+This computes the extremal values of the Rooted Quartet index for any int n following the algorithm by Tomás M. Coronado,
+Arnau Mir, Francesc Rosselló and Gabriel Valiente in their paper "A balance index for phylogenetic trees based on rooted
+quartets", as well as the value of the index in a given tree.
+"""
+
 from functools import lru_cache
 
 from biotrees.shape import Shape

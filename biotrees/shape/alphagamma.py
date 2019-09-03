@@ -1,7 +1,8 @@
 from functools import lru_cache
 from sympy import simplify
 
-from biotrees.shape import Shape, count_leaves, add_leaf_to_edge, add_leaf_to_node, iter_replace_tree_at
+from biotrees.shape import Shape, count_leaves
+from biotrees.shape.generator import add_leaf_to_edge, add_leaf_to_node, iter_replace_tree_at
 from biotrees.util import and_then, parametric_total_probabilities
 
 

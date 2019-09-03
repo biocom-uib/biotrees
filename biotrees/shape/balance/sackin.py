@@ -1,10 +1,15 @@
+"""
+This computes the extremal values of the Sackin index for any int n following the algorithm by Mareike Fischer in their
+paper "Extremal values of the Sackin balance index for rooted binary trees", as well as the value of the index in a
+given tree.
+"""
+
 from biotrees.util import unique
 
 from biotrees.shape import Shape, count_leaves
 from biotrees.shape.generator import comb, binary_max_balanced
 
 from biotrees.phylotree import PhyloTree, shape_to_phylotree, phylotree_to_shape
-from biotrees.phylotree.subtree import subtree
 
 
 def log2(n):

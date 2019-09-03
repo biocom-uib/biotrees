@@ -1,3 +1,9 @@
+"""
+This computes the extremal values of the Rooted Quartet index for any int n following the algorithm by Arnau Mir,
+Francesc Rosselló and Lucía Rotger in their paper "A new balance index for phylogenetic trees", as well as the value of
+the index in a given tree.
+"""
+
 from biotrees.util import binom2
 
 from biotrees.shape.generator import comb, binary_max_balanced

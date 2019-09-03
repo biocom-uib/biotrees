@@ -1,3 +1,9 @@
+"""
+This computes the extremal values of the Colless index for any int n following the algorithm by Tomás M. Coronado,
+Mareike Fischer, Lina Herbst, Francesc Rosselló and Kristina Wicke in their paper "On the minimum value of the Colless
+index and the bifurcating trees that achieve it", as well as the value of the index in a given tree.
+"""
+
 from functools import lru_cache
 
 from biotrees.util import unique
