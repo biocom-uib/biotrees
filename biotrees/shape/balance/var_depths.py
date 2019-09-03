@@ -1,3 +1,9 @@
+"""
+This computes the extremal values of the Sackin index for any int n following the algorithm by Tomás M. Coronado, Arnau
+Mir and Francesc Rosselló in their paper "On the variance of the leaves' depths in a rooted tree I: Extremal values",
+as well as the value of the index in a given tree.
+"""
+
 from statistics import variance
 from math import log, floor
 
@@ -86,6 +92,6 @@ def _prune_lis(t, lis):
             return t
 
     d = get_depth(t)
-    dis = tuple(reversed(tuple(d - li - 1  for li in lis)))
+    dis = tuple(reversed(tuple(d - li - 1 for li in lis)))
     return go(t, dis)
 
