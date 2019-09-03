@@ -39,7 +39,7 @@ class Shape(object):
         :return: `Shape` instance.
         """
         if self.is_leaf():
-            return Shape.LEAF
+            return Shape()
         else:
             return Shape([ch.clone() for ch in self.children])
 
@@ -232,7 +232,7 @@ def root_join(ts):
 
 
 def rooted_deg(t):
-    return len(t.children)
+    return len(t.children) if not t.is_leaf() else 0
 
 
 def unrooted_deg(t, root=False):
