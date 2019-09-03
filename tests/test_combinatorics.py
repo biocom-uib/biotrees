@@ -26,7 +26,7 @@ class TestCombinatorics(unittest.TestCase):
                 self.assertTrue(
                     combinatorics.subset(s, S))
                 self.assertEqual(
-                    combinatorics.subset(S, s), s == S)
+                    combinatorics.subset(S, s), set(s) == set(S))
 
         self.assertFalse(
             combinatorics.subset([1], {}))
@@ -109,7 +109,7 @@ class TestCombinatorics(unittest.TestCase):
                 r = list(combinatorics.finite_bijections(A, B))
 
                 for bij in r:
-                    self.assertEqual(set(bij.keys())  , set(A))
+                    self.assertEqual(set(bij.keys()),   set(A))
                     self.assertEqual(set(bij.values()), set(B))
 
                 if len(A) == len(B):
@@ -118,6 +118,6 @@ class TestCombinatorics(unittest.TestCase):
                     self.assertEqual(r, [])
 
         self.assertEqual(
-            list(combinatorics.finite_bijections({1, 2}, {'a', 'b'})),
-            [ {1: 'a', 2: 'b'},
-              {1: 'b', 2: 'a'} ])
+            sorted([sorted(bij.items()) for bij in combinatorics.finite_bijections({1, 2}, {'a', 'b'})]),
+            [[(1, 'a'), (2, 'b')],
+             [(1, 'b'), (2, 'a')]])
