@@ -1,6 +1,6 @@
 """
-This computes the extremal values of the Sackin index for any int n following the algorithm by Tomás M. Coronado, Arnau
-Mir, Francesc Rosselló and Lucía Rotger in their paper "On Sackin’s original proposal: The variance of the leaves’
+This computes the extremal values of the Variance of the leaves' depths index for any int n following the algorithm by Tomás M. 
+Coronado, Arnau Mir, Francesc Rosselló and Lucía Rotger in their paper "On Sackin’s original proposal: The variance of the leaves’
 depths as a phylogenetic balance index", as well as the value of the index in a given tree.
 """
 
@@ -45,7 +45,7 @@ def min_var_depths(n):
 def min_var_depths_vector(n):
     """
     This method computes the vector of depths of n leaves that attain minimum variance of depths. Any tree with these
-    leaves' depths will have minimum leaves' depth.
+    leaves' depths will have minimum leaves' depths.
     :param n: `int` instance.
     :return: `Shape` instance.
     """
