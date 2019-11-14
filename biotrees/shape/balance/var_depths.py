@@ -1,7 +1,7 @@
 """
 This computes the extremal values of the Sackin index for any int n following the algorithm by Tomás M. Coronado, Arnau
-Mir and Francesc Rosselló in their paper "On the variance of the leaves' depths in a rooted tree I: Extremal values",
-as well as the value of the index in a given tree.
+Mir, Francesc Rosselló and Lucía Rotger in their paper "On Sackin’s original proposal: The variance of the leaves’
+depths as a phylogenetic balance index", as well as the value of the index in a given tree.
 """
 
 from statistics import variance
@@ -13,10 +13,21 @@ from biotrees.shape.generator import binary_max_balanced
 
 
 def var_depths(t):
+    """
+    Given a `Shape` t, it returns the variance of its leaves' depth.
+    :param t: `Shape` instance.
+    :return: `float` instance.
+    """
     return variance(get_leaf_depths(t))
 
 
 def min_var_depths(n):
+    """
+    This method computes a tree with n leaves and minimum variance of depths, but there are many others: any tree which is
+    shape-equivalent to it would have minimum variance of depths, too.
+    :param n: `int` instance.
+    :return: `Shape` instance.
+    """
     m = int(floor(log(n, 2)))
     twotod = 2 ** (m + 1)
     k = n - twotod / 2
@@ -32,6 +43,12 @@ def min_var_depths(n):
 
 
 def min_var_depths_vector(n):
+    """
+    This method computes the vector of depths of n leaves that attain minimum variance of depths. Any tree with these
+    leaves' depths will have minimum leaves' depth.
+    :param n: `int` instance.
+    :return: `Shape` instance.
+    """
     m = int(floor(log(n, 2)))
     twotom = 2**m
     k = n - twotom
@@ -61,7 +78,7 @@ def min_var_depths_vector(n):
         return var, ls
 
 
-def _liss(n):     # meterlo en utils en combinatoria
+def _liss(n):
     m = int(floor(log(n, 2)))
     liss = []
     for j in range(1, m+1):
