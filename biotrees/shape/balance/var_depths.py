@@ -1,6 +1,6 @@
 """
-This computes the extremal values of the Variance of the leaves' depths index for any int n following the algorithm by Tomás M. 
-Coronado, Arnau Mir, Francesc Rosselló and Lucía Rotger in their paper "On Sackin’s original proposal: The variance of the leaves’
+This computes the extremal values of the Sackin index for any int n following the algorithm by Tomás M. Coronado, Arnau
+Mir, Francesc Rosselló and Lucía Rotger in their paper "On Sackin’s original proposal: The variance of the leaves’
 depths as a phylogenetic balance index", as well as the value of the index in a given tree.
 """
 
@@ -8,17 +8,18 @@ from statistics import variance
 from math import log, floor
 
 from biotrees.combinatorics import subsets_with_k_elements_that_contain_subset_s
-from biotrees.shape import Shape, get_leaf_depths, get_depth
+from biotrees.shape import Shape, get_leaf_depths, get_depth, count_leaves
 from biotrees.shape.generator import binary_max_balanced
 
 
 def var_depths(t):
     """
-    Given a `Shape` t, it returns the variance of its leaves' depth.
+    Given a `Shape` t, it returns the variance of its leaves' depths.
     :param t: `Shape` instance.
     :return: `float` instance.
     """
-    return variance(get_leaf_depths(t))
+    n = count_leaves(t)
+    return (n-1) / n * variance(get_leaf_depths(t))
 
 
 def min_var_depths(n):
@@ -45,7 +46,7 @@ def min_var_depths(n):
 def min_var_depths_vector(n):
     """
     This method computes the vector of depths of n leaves that attain minimum variance of depths. Any tree with these
-    leaves' depths will have minimum leaves' depths.
+    leaves' depths will have minimum leaves' depth.
     :param n: `int` instance.
     :return: `Shape` instance.
     """
@@ -54,15 +55,15 @@ def min_var_depths_vector(n):
     k = n - twotom
 
     if k == 0:
-        return 0, []
+        return 0, ()
     else:
         var = 2*k*(twotom - k) / n**2
-        ls = []
+        ls = ()
 
         for lis in _liss(n):
             if sum(2**li - 1 for li in lis) <= twotom - k and max(lis) < m:
                 var2 = (twotom - k - sum(2**li - li**2 - 1 for li in lis)) / n         \
-                        - (twotom - k - sum(2**li - li - 1 for li in lis)**2) / n**2
+                        - (twotom - k - sum(2**li - li - 1 for li in lis))**2 / n**2
 
                 if var2 < var:
                     var = var2
@@ -70,7 +71,7 @@ def min_var_depths_vector(n):
 
             elif sum(2**(li-1) - 1 for li in lis) > twotom - k:
                 var2 = (3 * twotom - k - sum(2**li - li**2 - 1 for li in lis)) / n        \
-                        - (3 * twotom - k - sum(2**li - li - 1 for li in lis)**2) / n**2
+                        - (3 * twotom - k - sum(2**li - li - 1 for li in lis))**2 / n**2
                 if var2 < var:
                     var = var2
                     ls = lis
