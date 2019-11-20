@@ -9,7 +9,7 @@ from math import log, floor
 
 from biotrees.combinatorics import subsets_with_k_elements_that_contain_subset_s
 from biotrees.shape import Shape, get_leaf_depths, get_depth, count_leaves
-from biotrees.shape.generator import binary_max_balanced
+from biotrees.shape.generator import binary_max_balanced, comb
 
 
 def var_depths(t):
@@ -20,6 +20,15 @@ def var_depths(t):
     """
     n = count_leaves(t)
     return (n-1) / n * variance(get_leaf_depths(t))
+
+
+def max_var_depths(n):
+    """
+    Returns all the `Shape` instances that attain the maximum variance of depths with `int` n leaves.
+    :param n: `int` instance.
+    :return: `list` instance.
+    """
+    return (n-1) * (n-2) * (n**2 + 3*n - 6) / (12*n**2), comb(n)
 
 
 def min_var_depths(n):
