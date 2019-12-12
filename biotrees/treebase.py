@@ -1,4 +1,6 @@
 import requests
+from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException
 import feedparser
 from os import path
 from urllib.parse import urljoin, quote as urlquote
@@ -6,15 +8,19 @@ from xml.etree import ElementTree
 from networkx import DiGraph
 
 from biotrees.phylotree import digraph_to_phylotree
+from biotrees.shape import count_leaves
 
 
 """
 Stores host and base path information about the TreeBase API
 """
 class TreeBaseClient(object):
-    def __init__(self, host, base_path):
+    def __init__(self, host, base_path, max_retries):
         self.host = host
         self.base_path = base_path
+        self.adapter = HTTPAdapter(max_retries=max_retries)
+        self.session = requests.Session()
+        self.session.mount(self.host, self.adapter)
 
     @property
     def base_url(self):
@@ -24,8 +30,8 @@ class TreeBaseClient(object):
 """
 Create a new `TreeBaseClient`
 """
-def new_client(host='https://purl.org', base_path='/phylo/treebase/phylows/'):
-    return TreeBaseClient(host, base_path)
+def new_client(host='https://purl.org', base_path='/phylo/treebase/phylows/', max_retries=3):
+    return TreeBaseClient(host, base_path, max_retries)
 
 
 """
@@ -42,7 +48,7 @@ def search_trees(client, query="tb.kind.tree=Species", cache_file=None):
         return feedparser.parse(cache_file)
 
     else:
-        text = requests.get(url, params={'query': query, 'format': 'rss1', 'recordSchema': 'tree'}).text
+        text = client.session.get(url, params={'query': query, 'format': 'rss1', 'recordSchema': 'tree'}).text
 
         with open(cache_file, 'w+') as f:
             f.write(text)
@@ -86,16 +92,14 @@ Fetch the raw data of a tree from TreeBase
 :param format: Format in which the data should be retrieved
 :return: A `(ok, resp)` tuple containing whether the request was successful and the response object if it failed or the response text if succeeded.
 """
-def fetch_tree(client, tree_id, format='nexml'):
+def fetch_tree(client, tree_id, format='nexml', retries=0):
     url = urljoin(client.base_url, 'tree/')
     url = urljoin(url, urlquote(tree_id))
 
-    response = requests.get(url, params={'format': format})
+    response = client.session.get(url, params={'format': format})
 
-    if 'accessviolation' in response.url:
-        return False, response
-    else:
-        return True, response.text
+    ok = 'accessviolation' not in response.url
+    return ok, response
 
 
 """
@@ -108,12 +112,17 @@ Apply `fetch_tree` to each TreeBase tree ID. Yield only successful requests and 
 """
 def fetch_trees(client, tree_ids, format='nexml', on_error=None):
     for tree_id in tree_ids:
-        ok, resp = fetch_tree(client, tree_id, format=format)
+        try:
+            ok, resp = fetch_tree(client, tree_id, format=format)
 
-        if ok:
-            yield tree_id, resp
-        elif on_error is not None:
-            on_error(tree_id, resp)
+            if ok:
+                yield tree_id, resp.text
+            elif on_error is not None:
+                on_error(tree_id, response=resp, exception=None)
+
+        except RequestException as e:
+            on_error(tree_id, response=None, exception=e)
+
 
 
 """
@@ -152,6 +161,7 @@ def nexml_digraphs(nexml):
             yield tree.get('id'), _nexml_tree_to_digraph(tree)
 
 
+
 """
 Convenience function combining `fetch_trees`, `nexml_digraphs` and `digraph_to_phylotree`.
 :param client: `TreeBaseClient` instance
@@ -161,14 +171,17 @@ Convenience function combining `fetch_trees`, `nexml_digraphs` and `digraph_to_p
 """
 def fetch_phylotrees(client, tree_ids, on_error=None):
     for tree_id, nexml in fetch_trees(client, tree_ids, format='nexml', on_error=on_error):
-        for tree_id, g in nexml_digraphs(nexml):
-            yield tree_id, digraph_to_phylotree(g)
+        try:
+            for tree_id, g in nexml_digraphs(nexml):
+                yield tree_id, digraph_to_phylotree(g)
+        except ElementTree.ParseError as e:
+            on_error(tree_id, response=None, exception=e)
 
 
 if __name__ == '__main__':
     # example printing the shapes of all species trees in TreeBase (takes a long time)
 
-    client = new_client()
+    client = new_client(max_retries=5)
     trees_feed = search_trees(client, cache_file='treebase_index.rdf')
 
     failed = []
@@ -176,23 +189,32 @@ if __name__ == '__main__':
 
     from biotrees.phylotree import phylotree_to_shape
 
-    def log_tree(t=None):
+    def log_tree(tree_id, t=None):
         global trees_feed
         global failed
         global succeeded
 
         if t is not None:
-            print(phylotree_to_shape(t))
-        else:
-            print('{} succeeded {} failed out of {} trees'.format(len(succeeded), len(failed), len(trees_feed['items'])), end='')
+            shape = phylotree_to_shape(t)
+            nleaves = count_leaves(shape)
+
+            if nleaves == 1:
+                print(f'{tree_id} = {t} has only one leaf')
+            else:
+                print(f'{tree_id} ok ({nleaves} leaves)')
+
+        print('{} succeeded {} failed out of {} trees'.format(len(succeeded), len(failed), len(trees_feed['items'])))
+
+        print('', end='', flush=True)
 
 
-    def tree_failed(tree_id, response):
+    def on_error(tree_id, response, exception):
         global failed
+        print(f'{tree_id} failed: exception={exception}')
         failed.append(tree_id)
-        log_tree()
+        log_tree(tree_id)
 
 
-    for tree_id, tree in fetch_phylotrees(client, get_feed_tree_ids(trees_feed), on_error=tree_failed):
+    for tree_id, tree in fetch_phylotrees(client, get_feed_tree_ids(trees_feed), on_error=on_error):
         succeeded.append(tree_id)
-        log_tree(tree)
+        log_tree(tree_id, tree)
