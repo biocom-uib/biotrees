@@ -34,7 +34,7 @@ def max_var_depths(n):
 def min_var_depths(n):
     """
     This method computes a tree with n leaves and minimum variance of depths, but there are many others: any tree which is
-    shape-equivalent to it would have minimum variance of depths, too.
+    depth-equivalent to it would have minimum variance of depths, too.
     :param n: `int` instance.
     :return: `Shape` instance.
     """
