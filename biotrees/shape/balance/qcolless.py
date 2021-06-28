@@ -5,6 +5,7 @@ yields a better balance index", as well as the value of the index in a given tre
 """
 
 from biotrees.shape.generator import comb, binary_max_balanced
+from biotrees.shape import count_leaves
 
 
 def binary_qcolless_index(tree):
@@ -23,6 +24,11 @@ def binary_qcolless_index(tree):
 
     return go(tree)[0]
 
+
+def normalized_binary_qcolless_index(tree):
+    n = count_leaves(tree)
+
+    return binary_qcolless_index(tree) / (binary_qcolless_index(max_qcolless(n)[0]) - binary_qcolless_index(min_qcolless(n)[0]))
 
 def min_qcolless(n):
     """

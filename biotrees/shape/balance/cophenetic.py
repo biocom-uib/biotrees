@@ -5,7 +5,7 @@ the index in a given tree.
 """
 
 from biotrees.util import binom2
-
+from biotrees.shape import count_leaves
 from biotrees.shape.generator import comb, binary_max_balanced
 
 
@@ -23,6 +23,11 @@ def cophenetic_index(tree):
         return 0
     else:
         return sum(go(ch)[0] for ch in tree.children)
+
+def normalized_cophenetic_index(tree):
+    n = count_leaves(tree)
+
+    return cophenetic_index(tree) / (cophenetic_index(max_cophenetic(n)[0]) - cophenetic_index(min_cophenetic(n)[0]))
 
 
 def max_cophenetic(n):

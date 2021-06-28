@@ -6,11 +6,12 @@ quartets", as well as the value of the index in a given tree.
 
 from functools import lru_cache
 
-from biotrees.shape import Shape
+from biotrees.shape import Shape, count_leaves
 from biotrees.shape.iso import isomorphic
 from biotrees.shape.generator import star, comb, binary_max_balanced
 
 from biotrees.util import binom2
+
 
 
 def binary_quartet_index(tree):
@@ -34,6 +35,18 @@ def binary_quartet_index(tree):
         return s0+s3, kappa
 
     return go(tree)[0]
+
+
+def normalized_binary_quartet_index(tree):
+    n = count_leaves(tree)
+
+    return binary_quartet_index(tree) / binary_quartet_index(max_binary_quartet(n)[0])
+
+
+def normalized_quartet_index(tree):
+    n = count_leaves(tree)
+
+    return quartet_index(tree) / quartet_index(max_quartet(n)[0])
 
 
 @lru_cache(maxsize=1)

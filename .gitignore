@@ -3,3 +3,6 @@ __pycache__
 *.venv
 .idea
 venv
+prueba.txt
+prueba2.txt
+biotrees/shape/experiment.py

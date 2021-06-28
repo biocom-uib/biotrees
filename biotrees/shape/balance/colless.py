@@ -7,8 +7,8 @@ index and the bifurcating trees that achieve it", as well as the value of the in
 from functools import lru_cache
 
 from biotrees.util import unique
-from biotrees.shape import Shape
-from biotrees.shape.generator import comb
+from biotrees.shape import Shape, count_leaves
+from biotrees.shape.generator import comb, binary_max_balanced
 
 
 def binary_colless_index(tree):
@@ -26,6 +26,12 @@ def binary_colless_index(tree):
         return abs(nl - nr) + cil + cir, nl + nr
 
     return go(tree)[0]
+
+
+def normalized_binary_colless_index(tree):
+    n = count_leaves(tree)
+
+    return binary_colless_index(tree) / (binary_colless_index(max_colless(n)[0]) - binary_colless_index(binary_max_balanced(n)))
 
 
 def binary(n):

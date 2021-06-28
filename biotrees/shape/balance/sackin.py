@@ -34,6 +34,11 @@ def sackin_index(tree):
     return go(tree)[0]
 
 
+def normalized_sackin_index(tree):
+    n = count_leaves(tree)
+
+    return sackin_index(tree) / (sackin_index(max_sackin(n)[0]) - sackin_index(binary_max_balanced(n)))
+
 def max_sackin(n):
     """
     Returns all the `Shape` instances that attain the maximum Sackin index with `int` n leaves.
