@@ -5,6 +5,9 @@ distinguished.
 
 from biotrees.shape import Shape, is_binary, count_leaves, get_depth
 
+from networkx import DiGraph
+import networkx.algorithms.tree
+
 
 class PhyloTree(Shape):
     """
@@ -176,3 +179,27 @@ def phylotree_to_shape(phylo):
     :return: `Shape` instance.
     """
     return phylo.shape()
+
+
+def digraph_to_phylotree(g):
+    """
+    Returns a `PhyloTree` instance by traversing a `DiGraph` object from `networkx`.
+    :param g: `DiGraph`
+    :return: `PhyloTree`
+    """
+    assert len(g) > 0
+    assert networkx.algorithms.tree.is_tree(g)
+
+    def go(n):
+        if g.out_degree(n) == 0:
+            return PhyloTree(leaf=n)
+        else:
+            return PhyloTree(None, children=[go(ch) for ch in g.successors(n)])
+
+    root, = [n for n, d in g.in_degree() if d == 0]
+
+    phylo = go(root)
+    phylo._sort()
+
+    return phylo
+
